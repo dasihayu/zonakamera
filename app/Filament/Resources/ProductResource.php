@@ -8,10 +8,14 @@ use App\Models\Product;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
+use Filament\Support\RawJs;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use League\CommonMark\CommonMarkConverter;
+use TomatoPHP\FilamentMediaManager\Form\MediaManagerInput;
 
 class ProductResource extends Resource
 {
@@ -20,14 +24,74 @@ class ProductResource extends Resource
     protected static ?string $navigationIcon = 'fluentui-camera-24';
 
     protected static ?int $navigationSort = -1;
-    
+
     protected static ?string $recordTitleAttribute = 'name';
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                //
+                Forms\Components\Tabs::make('Product Resource')
+                    ->tabs([
+                        Forms\Components\Tabs\Tab::make('General')
+                            ->icon('heroicon-o-information-circle')
+                            ->schema([
+                                Forms\Components\Section::make('Main Details')
+                                    ->description('Fill out the main details of the product')
+                                    ->icon('heroicon-o-clipboard')
+                                    ->schema([
+                                        Forms\Components\TextInput::make('title')
+                                            ->label('Title')
+                                            ->maxLength(255)
+                                            ->required()
+                                            ->columnSpan(2),
+                                        Forms\Components\Select::make('categories')
+                                            ->label('Category')
+                                            ->relationship('categories', 'name', function (Builder $query) {
+                                                $query->where('is_active', 1);
+                                            })
+                                            ->searchable()
+                                            ->multiple()
+                                            ->preload()
+                                            ->required(),
+                                        Forms\Components\Select::make('is_visible')
+                                            ->label('Is Visible')
+                                            ->default(1)
+                                            ->options([
+                                                0 => "No",
+                                                1 => "Yes",
+                                            ])
+                                            ->native(false)
+                                            ->required(),
+                                        Forms\Components\TextInput::make('price')
+                                            ->prefix('IDR')
+                                            ->numeric()
+                                            ->columnSpan(2),
+                                        Forms\Components\MarkdownEditor::make('description')
+                                            ->label('Description')
+                                            ->helperText('Provide a description for the product')
+                                            ->maxLength(500)
+                                            ->columnSpanFull(),
+                                    ])
+                                    ->compact()
+                                    ->columns(2),
+                            ]),
+                        Forms\Components\Tabs\Tab::make('Images')
+                            ->icon('heroicon-o-photo')
+                            ->schema([
+                                Forms\Components\Section::make('Image')
+                                    ->description('Upload product images here')
+                                    ->schema([
+                                        Forms\Components\FileUpload::make('image_url')
+                                            ->label('')
+                                            ->disk('public')
+                                            ->directory('product_image')
+                                            ->required()
+                                    ])
+                                    ->compact(),
+                            ]),
+                    ])
+                    ->columnSpanFull(),
             ]);
     }
 
@@ -35,7 +99,23 @@ class ProductResource extends Resource
     {
         return $table
             ->columns([
-                //
+                Tables\Columns\ImageColumn::make('image_url')
+                    ->label('Image')
+                    ->width(100)
+                    ->height(100)
+                    ->disk('public'),
+                Tables\Columns\TextColumn::make('title')
+                    ->searchable()
+                    ->alignCenter(),
+
+                Tables\Columns\TextColumn::make('price')
+                    ->money('IDR',  true)
+                    ->sortable(),
+                Tables\Columns\IconColumn::make('is_visible')
+                    ->boolean()
+                    ->alignCenter(),
+                Tables\Columns\TextColumn::make('categories.name')
+                    ->badge()
             ])
             ->filters([
                 //
