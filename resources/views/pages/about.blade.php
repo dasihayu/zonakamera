@@ -66,27 +66,29 @@
     </div>
 
     <div class="flex flex-row items-center justify-evenly text-center my-24 py-6 pr-6">
+        <div id="map" class="w-full h-80 rounded-xl max-w-screen-sm"></div>
         <div class="flex flex-col w-[500px] gap-2">
             <h1 class="font-bold text-5xl text-left">Where you can find us</h1>
             <p class="text-left">Since 2018, we have been dedicated to providing high-quality camera rentals and services.
                 With over 1,500+ satisfied customers and a consistent 5-star rating, we are proud to be your trusted partner
                 in capturing unforgettable moments.</p>
         </div>
-        <div id="map" class="w-auto h-80 rounded-xl"></div>
     </div>
 
 @endsection
 
 @push('scripts')
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script>
-        const map = L.map('map').setView([-6.200000, 106.816666], 13); // Koordinat Jakarta sebagai contoh
+        document.addEventListener("DOMContentLoaded", function () {
+            const map = L.map('map').setView([-6.98312305112442, 110.46219552383577], 18);
 
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-        }).addTo(map);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            }).addTo(map);
 
-        const marker = L.marker([-6.200000, 106.816666]).addTo(map)
-            .bindPopup('Lokasi Kami di Jakarta.')
-            .openPopup();
+            L.marker([-6.98312305112442, 110.46219552383577]).addTo(map)
+                .bindPopup('Zonakamera Semarang')
+                .openPopup();
+        });
     </script>
 @endpush
