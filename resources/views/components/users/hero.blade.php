@@ -1,16 +1,16 @@
 <!-- Hero Section -->
 <div class="relative">
     <!-- Background Image -->
-    <img src="{{ asset('images/banner.jpg') }}" alt="Hero Image" class="w-full h-screen object-cover blur-sm" />
+    <img src="{{ asset('storage/' . $page->home_banner_img) }}" alt="Hero Image" class="w-full h-screen object-cover blur-sm" />
+
 
     <!-- Headline -->
     <div class="absolute inset-0 flex flex-col items-center justify-center text-center">
-        <h1 class="text-6xl font-extrabold md:text-8xl drop-shadow-lg text-white">
-            Find the Best Gear <br>
-            for Every Need
+        <h1 class="text-6xl font-extrabold md:text-8xl max-w-4xl drop-shadow-lg text-white">
+            {{ $page->home_banner_title}}
         </h1>
         <p class="mt-4 text-2xl md:text-3xl text-white">
-            Rent cameras and photography gear easily, quickly, and at affordable prices
+            {{ $page->home_banner_sub }}
         </p>
         <a href="#"
             class="flex items-center text-2xl bg-primary text-white py-2 px-6 rounded hover:bg-primary-dark transition mt-6">
