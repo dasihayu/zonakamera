@@ -1,12 +1,10 @@
 <!-- About Section -->
 <div class="flex flex-row items-center justify-evenly text-center my-24 py-6 pr-6">
-    <img src="{{ asset('images/about.jpg') }}" width="600" alt="" class="rounded-xl">
+    <img src="{{ asset('storage/' . $page->home_about_img) }}" width="600" alt="" class="rounded-xl">
     <div class="flex flex-col w-[500px] gap-2">
         <p class="text-primary text-left">ABOUT US</p>
-        <h1 class="font-bold text-5xl text-left">We Have Been Here Since 2018</h1>
-        <p class="text-left">Since 2018, we have been dedicated to providing high-quality camera rentals and services.
-            With over 1,500+ satisfied customers and a consistent 5-star rating, we are proud to be your trusted partner
-            in capturing unforgettable moments.</p>
+        <h1 class="font-bold text-5xl text-left">{{ $page->home_about_title }}</h1>
+        <p class="text-left">{{ $page->home_about_sub }}</p>
         <a href="{{ route('about') }}">
             <div class="flex flex-row items-center mt-12 gap-1">
                 <p class="text-primary hover:border-b-2 hover:border-primary">More Info</p>
