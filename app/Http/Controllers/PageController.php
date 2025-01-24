@@ -66,10 +66,10 @@ class PageController extends Controller
     //     return view('pages.home',  compact('page'));
     // }
 
-    public function info()
-    {
-        $page = Page::first();
+    // public function info()
+    // {
+    //     $page = Page::first();
 
-        return view('pages.home',  compact('page'));
-    }
+    //     return view('pages.info',  compact('page'));
+    // }
 }

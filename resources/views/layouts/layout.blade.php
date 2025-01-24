@@ -47,10 +47,10 @@
                         class="text-lg font-semibold text-gray-800 hover:text-gray-600 {{ Route::is('products') ? 'border-b-2 border-primary' : '' }}">
                         Member
                     </a> --}}
-                    <a href="{{ route('products') }}"
-                        class="text-lg font-semibold text-gray-800 hover:text-gray-600 {{ Route::is('products') ? 'border-b-2 border-primary' : '' }}">
+                    {{-- <a href="{{ route('info') }}"
+                        class="text-lg font-semibold text-gray-800 hover:text-gray-600 {{ Route::is('info') ? 'border-b-2 border-primary' : '' }}">
                         Info
-                    </a>
+                    </a> --}}
                 </li>
             </ul>
         </div>
