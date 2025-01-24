@@ -65,7 +65,6 @@ class PageResource extends Resource
                                             ->required(),
                                         Forms\Components\Markdowneditor::make('home_about_sub')
                                             ->label('About Subtitle')
-                                            ->maxLength(255)
                                             ->columnSpanFull()
                                             ->required(),
                                     ])
@@ -101,7 +100,6 @@ class PageResource extends Resource
                                             ->required(),
                                         Forms\Components\Markdowneditor::make('about_content_desctiption')
                                             ->label('About Text')
-                                            ->maxLength(255)
                                             ->columnSpanFull()
                                             ->required(),
                                     ])
@@ -118,12 +116,26 @@ class PageResource extends Resource
                                             ->maxLength(255),
                                         Forms\Components\Markdowneditor::make('about_map_text')
                                             ->label('Map Description')
-                                            ->maxLength(255)
                                             ->columnSpanFull()
                                             ->required(),
                                     ])
                                     ->compact()
                                     ->columns(2),
+                            ]),
+                        Forms\Components\Tabs\Tab::make('Products')
+                            ->icon('heroicon-o-camera')
+                            ->schema([
+                                Forms\Components\Section::make('banner Banner')
+                                    ->icon('heroicon-o-information-circle')
+                                    ->description('Will appear on the product page')
+                                    ->schema([
+                                        Forms\Components\FileUpload::make('product_banner')
+                                            ->label('Hero Image')
+                                            ->disk('public')
+                                            ->directory('pages/about')
+                                            ->required(),
+                                    ])
+                                    ->compact(),
                             ]),
                     ])
                     ->columnSpanFull(),

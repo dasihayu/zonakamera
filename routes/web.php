@@ -18,6 +18,4 @@ Route::get('/', [PageController::class, 'home'])->name('home');
 
 Route::get('/about', [PageController::class, 'about'])->name('about');
 
-Route::get('/products', function () {
-    return view('pages.product');
-})->name('products');
+Route::get('/products', [PageController::class, 'product'])->name('products', );
