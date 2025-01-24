@@ -1,19 +1,8 @@
 @extends('layouts.layout')
 
-@section('title', 'About')
+@section('title', 'About Us')
 
 @section('content')
-    <!-- Hero Section -->
-    <div class="relative">
-        <!-- Background Image -->
-        <img src="{{ asset('storage/' . $page->about_banner) }}" alt="Hero Image" class="w-full max-h-80 object-cover blur-sm" />
-        <!-- Headline -->
-        <div class="absolute inset-0 flex flex-col items-center justify-center text-center mt-16">
-            <h1 class="text-6xl font-extrabold md:text-8xl drop-shadow-lg text-white">
-                About Us
-            </h1>
-        </div>
-    </div>
 
     <!-- About Section -->
     <div class="flex flex-row items-center justify-evenly text-center my-24 py-6 pr-6">

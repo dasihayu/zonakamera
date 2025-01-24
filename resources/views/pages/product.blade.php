@@ -3,17 +3,6 @@
 @section('title', 'Product')
 
 @section('content')
-    <div class="relative">
-        <!-- Background Image -->
-        <img src="{{ asset('storage/' . $page->product_banner) }}" alt="Hero Image"
-            class="w-full max-h-80 object-cover blur-sm" />
-        <!-- Headline -->
-        <div class="absolute inset-0 flex flex-col items-center justify-center text-center mt-16">
-            <h1 class="text-6xl font-extrabold md:text-8xl drop-shadow-lg text-white">
-                Products
-            </h1>
-        </div>
-    </div>
 
     <div class="flex flex-col items-center justify-center my-12 p-6 w-full">
         <div class="flex flex-col md:flex-row w-full max-w-screen-lg">

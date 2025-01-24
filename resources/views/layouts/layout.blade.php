@@ -8,7 +8,7 @@
 
     <!-- Google Fonts for Manrope -->
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    
+
     <!-- Base Styles -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Swiper/8.4.5/swiper-bundle.min.css">
     @vite('resources/css/app.css')
@@ -58,6 +58,20 @@
 
     <!-- Main Content -->
     <main class="flex-grow">
+        <!-- Hero Section -->
+        <div class="relative {{ request()->is('/') ? 'hidden' : '' }}">
+            <!-- Background Image -->
+            <img src="{{ asset('storage/' . $page->about_banner) }}" alt="Hero Image"
+                class="w-full max-h-80 object-cover blur-sm" />
+            <!-- Headline -->
+            <div class="absolute inset-0 flex flex-col items-center justify-center text-center mt-16">
+                <h1 class="text-6xl font-extrabold md:text-8xl drop-shadow-lg text-white">
+                    @yield('title')
+                </h1>
+            </div>
+        </div>
+
+
         @yield('content')
     </main>
 
@@ -69,7 +83,8 @@
                 <!-- Company Info -->
                 <div class="space-y-4">
                     <h3 class="text-2xl font-bold">Zonakamera</h3>
-                    <p class="text-gray-400">Your trusted partner for professional camera equipment rentals since 2018.</p>
+                    <p class="text-gray-400">Your trusted partner for professional camera equipment rentals since 2018.
+                    </p>
                     <div class="flex space-x-4">
                         <a href="#" class="text-gray-400 hover:text-primary">
                             <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
