@@ -20,14 +20,14 @@ class PageController extends Controller
     {
         $page = Page::first();
         
-        return view('pages.home',  compact('page'));
+        return view('pages.about',  compact('page'));
     }
     
     public function product()
     {
         $page = Page::first();
         
-        return view('pages.home',  compact('page'));
+        return view('pages.product',  compact('page'));
     }
     
     public function featured()

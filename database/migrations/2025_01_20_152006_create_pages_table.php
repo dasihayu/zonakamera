@@ -18,13 +18,13 @@ return new class extends Migration
             $table->string('home_banner_sub')->nullable();
             $table->string('home_about_img')->nullable();
             $table->string('home_about_title')->nullable();
-            $table->string('home_about_sub')->nullable();
+            $table->text('home_about_sub')->nullable();
             $table->string('about_banner')->nullable();
             $table->string('about_image')->nullable();
             $table->string('about_content_title')->nullable();
-            $table->string('about_content_desctiption')->nullable();
+            $table->text('about_content_desctiption')->nullable();
             $table->string('about_map_title')->nullable();
-            $table->string('about_map_text')->nullable();
+            $table->text('about_map_text')->nullable();
             $table->string('product_banner')->nullable();
             $table->string('featured_banner')->nullable();
             $table->string('member_banner')->nullable();

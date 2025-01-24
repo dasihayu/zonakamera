@@ -16,9 +16,7 @@ use App\Http\Controllers\PageController;
 
 Route::get('/', [PageController::class, 'home'])->name('home');
 
-Route::get('/about', function () {
-    return view('pages.about');
-})->name('about');
+Route::get('/about', [PageController::class, 'about'])->name('about');
 
 Route::get('/products', function () {
     return view('pages.product');
