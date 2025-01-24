@@ -91,13 +91,69 @@ class BookingResource extends Resource
     {
         return $table
             ->columns([
-                //
+                Tables\Columns\TextColumn::make('user.username')
+                    ->label('User'),
+
+                Tables\Columns\TextColumn::make('products.title')
+                    ->label('Products')
+                    ->listWithLineBreaks(),
+
+                Tables\Columns\TextColumn::make('start_date')
+                    ->label('Start Date')
+                    ->dateTime('l, d F Y'),
+
+                Tables\Columns\TextColumn::make('end_date')
+                    ->label('End Date')
+                    ->dateTime('l, d F Y'),
+
+                Tables\Columns\TextColumn::make('price')
+                    ->label('Total Price')
+                    ->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.')),
+
+                Tables\Columns\IconColumn::make('is_returned')
+                    ->boolean()
+                    ->trueIcon('heroicon-o-check-circle')
+                    ->falseIcon('heroicon-o-x-circle')
+                    ->colors([
+                        'success' => 1,
+                        'danger' => 0,
+                    ])
             ])
             ->filters([
-                //
+                Tables\Filters\SelectFilter::make('is_returned')
+                    ->label('Return Status')
+                    ->options([
+                        1 => 'Returned',
+                        2 => 'Not Yet Returned',
+                    ]),
+                Tables\Filters\Filter::make('booking_date_range')
+                    ->form([
+                        Forms\Components\DatePicker::make('from')->label('From'),
+                        Forms\Components\DatePicker::make('to')->label('To'),
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+                        return $query
+                            ->when(
+                                $data['from'],
+                                fn(Builder $query, $date): Builder => $query->whereDate('start_date', '>=', $date)
+                            )
+                            ->when(
+                                $data['to'],
+                                fn(Builder $query, $date): Builder => $query->whereDate('start_date', '<=', $date)
+                            );
+                    }),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\Action::make('isReturned')
+                    ->icon('heroicon-o-check-circle')
+                    ->color('success')
+                    ->requiresConfirmation()
+                    ->action(function (Booking $record) {
+                        $record->is_returned = 1;
+                        $record->save();
+                    })
+                    ->visible(fn(Booking $record) => $record->is_returned == 0),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

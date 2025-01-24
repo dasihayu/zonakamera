@@ -118,7 +118,12 @@ class ProductResource extends Resource
                     ->badge()
             ])
             ->filters([
-                //
+                Tables\Filters\SelectFilter::make('is_visible')
+                    ->label('Visibility')
+                    ->options([
+                        1 => 'Visible',
+                        0 => 'Not Visible',
+                    ])
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
