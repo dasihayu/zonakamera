@@ -39,14 +39,14 @@
                         class="text-lg font-semibold text-gray-800 hover:text-gray-600 {{ Route::is('products') ? 'border-b-2 border-primary' : '' }}">
                         Product
                     </a>
-                    <a href="{{ route('products') }}"
-                        class="text-lg font-semibold text-gray-800 hover:text-gray-600 {{ Route::is('products') ? 'border-b-2 border-primary' : '' }}">
+                    {{-- <a href="{{ route('featured') }}"
+                        class="text-lg font-semibold text-gray-800 hover:text-gray-600 {{ Route::is('featured') ? 'border-b-2 border-primary' : '' }}">
                         Featured
                     </a>
                     <a href="{{ route('products') }}"
                         class="text-lg font-semibold text-gray-800 hover:text-gray-600 {{ Route::is('products') ? 'border-b-2 border-primary' : '' }}">
                         Member
-                    </a>
+                    </a> --}}
                     <a href="{{ route('products') }}"
                         class="text-lg font-semibold text-gray-800 hover:text-gray-600 {{ Route::is('products') ? 'border-b-2 border-primary' : '' }}">
                         Info

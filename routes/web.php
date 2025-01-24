@@ -18,4 +18,5 @@ Route::get('/', [PageController::class, 'home'])->name('home');
 
 Route::get('/about', [PageController::class, 'about'])->name('about');
 
-Route::get('/products', [PageController::class, 'product'])->name('products', );
+Route::get('/products', [PageController::class, 'product'])->name('products' );
+// Route::get('/featured', [PageController::class, 'featured'])->name('featured' );

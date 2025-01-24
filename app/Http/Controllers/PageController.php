@@ -52,19 +52,19 @@ class PageController extends Controller
     }
 
 
-    public function featured()
-    {
-        $page = Page::first();
+    // public function featured()
+    // {
+    //     $page = Page::first();
 
-        return view('pages.home',  compact('page'));
-    }
+    //     return view('pages.featured',  compact('page'));
+    // }
 
-    public function member()
-    {
-        $page = Page::first();
+    // public function member()
+    // {
+    //     $page = Page::first();
 
-        return view('pages.home',  compact('page'));
-    }
+    //     return view('pages.home',  compact('page'));
+    // }
 
     public function info()
     {
