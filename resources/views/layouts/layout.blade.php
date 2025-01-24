@@ -16,6 +16,9 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css" />
 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+
     <!-- Additional Styles Stack -->
     @stack('styles')
 </head>
@@ -25,36 +28,62 @@
     <nav class="fixed top-0 left-0 w-full bg-white z-50">
         <div class="container flex items-center justify-between px-12 py-5 mx-auto">
             <img src="{{ asset('images/logo.png') }}" width="128" alt="Logo">
-            <ul>
-                <li class="flex flex-row gap-6">
+            <ul class="flex space-x-6 items-center">
+                <li>
                     <a href="{{ route('home') }}"
                         class="text-lg font-semibold text-gray-800 hover:text-gray-600 {{ Route::is('home') ? 'border-b-2 border-primary' : '' }}">
                         Home
                     </a>
+                </li>
+                <li>
                     <a href="{{ route('about') }}"
                         class="text-lg font-semibold text-gray-800 hover:text-gray-600 {{ Route::is('about') ? 'border-b-2 border-primary' : '' }}">
                         About
                     </a>
+                </li>
+                <li>
                     <a href="{{ route('products') }}"
                         class="text-lg font-semibold text-gray-800 hover:text-gray-600 {{ Route::is('products') ? 'border-b-2 border-primary' : '' }}">
                         Product
                     </a>
-                    {{-- <a href="{{ route('featured') }}"
-                        class="text-lg font-semibold text-gray-800 hover:text-gray-600 {{ Route::is('featured') ? 'border-b-2 border-primary' : '' }}">
-                        Featured
-                    </a>
-                    <a href="{{ route('products') }}"
-                        class="text-lg font-semibold text-gray-800 hover:text-gray-600 {{ Route::is('products') ? 'border-b-2 border-primary' : '' }}">
-                        Member
-                    </a> --}}
-                    {{-- <a href="{{ route('info') }}"
-                        class="text-lg font-semibold text-gray-800 hover:text-gray-600 {{ Route::is('info') ? 'border-b-2 border-primary' : '' }}">
-                        Info
-                    </a> --}}
                 </li>
+
+                <!-- Menu untuk pengguna yang sudah login -->
+                @auth
+                    <li>
+                        <a href="{{ route('products') }}"
+                            class="text-lg font-semibold text-gray-800 hover:text-gray-600 {{ Route::is('profile') ? 'border-b-2 border-primary' : '' }}">
+                            <i class="fas fa-user-circle mr-2"></i> Profile
+                        </a>
+                    </li>
+                    <!-- Tombol Logout -->
+                    <li>
+                        <form action="{{ route('logout') }}" method="POST" class="inline">
+                            @csrf
+                            <button type="submit" class="px-4 py-2 rounded-lg bg-gray-200 text-black">
+                                <i class="fas fa-sign-out-alt mr-2"></i>
+                            </button>
+                        </form>
+                    </li>
+                @else
+                    <li>
+                        <div class="flex flex-row gap-2">
+
+                            <a href="{{ route('register') }}"
+                                class="text-lg font-semibold bg-primary text-white px-4 py-2 rounded-lg">
+                                Register
+                            </a>
+                            <a href="{{ route('login') }}"
+                                class="text-lg font-semibold text-gray-800 border border-primary px-4 py-2 rounded-lg">
+                                Login
+                            </a>
+                        </div>
+                    </li>
+                @endauth
             </ul>
         </div>
     </nav>
+
 
     <!-- Main Content -->
     <main class="flex-grow">
