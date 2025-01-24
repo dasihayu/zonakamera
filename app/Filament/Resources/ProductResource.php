@@ -127,7 +127,17 @@ class ProductResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
-            ])
+                Tables\Actions\Action::make('toggleVisibility')
+                    ->label('Toggle Visibility')
+                    ->icon('heroicon-o-eye')
+                    ->color('warning')
+                    ->requiresConfirmation()
+                    ->action(function (Model $record) {
+                        // Membalikkan nilai is_visible
+                        $record->is_visible = !$record->is_visible;
+                        $record->save();
+                    })
+                ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
