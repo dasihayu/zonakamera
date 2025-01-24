@@ -34,7 +34,7 @@
             </div>
         @endforeach
     </div>
-    <a href="">
+    <a href="{{ route('products') }}">
         <div class="flex flex-row justify-center items-center mt-12 gap-1 hover:border-b-2 hover:border-primary">
             <p class="text-primary">View More</p>
             <svg xmlns="http://www.w3.org/2000/svg" class="ml-2 w-4 h-4 text-primary" fill="none" viewBox="0 0 24 24"

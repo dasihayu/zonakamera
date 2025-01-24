@@ -12,7 +12,7 @@
         <p class="mt-4 text-2xl md:text-3xl text-white">
             {{ $page->home_banner_sub }}
         </p>
-        <a href="#"
+        <a href="{{ route('products') }}"
             class="flex items-center text-2xl bg-primary text-white py-2 px-6 rounded hover:bg-primary-dark transition mt-6">
             <span>Book Now</span>
             <svg xmlns="http://www.w3.org/2000/svg" class="ml-2 w-4 h-4" fill="none" viewBox="0 0 24 24"
