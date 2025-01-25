@@ -20,12 +20,12 @@
                         <p class="font-bold mb-2">Categories</p>
                         <div class="flex flex-wrap gap-2">
                             <a href="{{ route('products', ['category' => '']) }}"
-                                class="px-4 py-2 rounded-lg w-full {{ request('category') == '' ? 'bg-primary text-white' : 'bg-gray-200 text-black' }}">
+                                class="px-4 py-2 text-sm rounded-lg w-full {{ request('category') == '' ? 'bg-primary text-white' : 'bg-gray-200 text-black' }}">
                                 All
                             </a>
                             @foreach ($categories as $category)
                                 <a href="{{ route('products', ['category' => $category->name]) }}"
-                                    class="px-4 py-2 rounded-lg w-full {{ request('category') == $category->name ? 'bg-primary text-white' : 'bg-gray-200 text-black' }}">
+                                    class="px-2 py-1 rounded-lg w-full {{ request('category') == $category->name ? 'bg-primary text-white' : 'bg-gray-200 text-black' }}">
                                     {{ $category->name }}
                                 </a>
                             @endforeach
@@ -57,7 +57,7 @@
 
                     <div class="mt-4">
                         <button type="submit" class="px-4 py-2 bg-primary text-white rounded-lg">
-                            Apply Filters
+                            Apply Price
                         </button>
                         <a href="{{ route('products') }}" class="px-4 py-2 bg-gray-200 text-black rounded-lg">
                             Reset
