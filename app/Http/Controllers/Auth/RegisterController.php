@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use Spatie\Permission\Models\Role;
 
 class RegisterController extends Controller
 {
@@ -43,7 +44,8 @@ class RegisterController extends Controller
 
     protected function create(array $data)
     {
-        return User::create([
+        // Buat pengguna
+        $user = User::create([
             'firstname' => $data['firstName'],
             'lastname' => $data['lastName'],
             'username' => Str::slug($data['firstName'] . ' ' . $data['lastName']),
@@ -51,5 +53,19 @@ class RegisterController extends Controller
             'phone' => $data['phone'],
             'password' => bcrypt($data['password']),
         ]);
+
+        // Ambil role_id untuk role 'customer'
+        $customerRole = Role::where('name', 'customer')->first();
+
+        if ($customerRole) {
+            // Tambahkan role customer ke pengguna
+            DB::table('model_has_roles')->insert([
+                'role_id' => $customerRole->id,
+                'model_type' => 'App\Models\User',
+                'model_id' => $user->id,
+            ]);
+        }
+
+        return $user;
     }
 }
