@@ -35,12 +35,6 @@ class AppServiceProvider extends ServiceProvider
                 ->defaultSort('created_at', 'desc');
         });
 
-        // # \Opcodes\LogViewer
-        LogViewer::auth(function ($request) {
-            $role = auth()?->user()?->roles?->first()->name;
-            return $role == config('filament-shield.super_admin.name');
-        });
-
         // # Hooks
         FilamentView::registerRenderHook(
             PanelsRenderHook::FOOTER,

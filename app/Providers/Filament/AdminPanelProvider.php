@@ -51,23 +51,9 @@ class AdminPanelProvider extends PanelProvider
                 Navigation\NavigationGroup::make()
                     ->label(__('menu.nav_group.settings'))
                     ->collapsed(),
-                Navigation\NavigationGroup::make()
-                    ->label(__('menu.nav_group.activities'))
-                    ->collapsed(),
-            ])
-            ->navigationItems([
-                Navigation\NavigationItem::make('Log Viewer') // !! To-Do: lang
-                    ->visible(fn(): bool => auth()->user()->can('access_log_viewer'))
-                    ->url(config('app.url').'/'.config('log-viewer.route_path'), shouldOpenInNewTab: true)
-                    ->icon('fluentui-document-bullet-list-multiple-20-o')
-                    ->group(__('menu.nav_group.activities'))
-                    ->sort(99),
             ])
             ->viteTheme('resources/css/filament/admin/theme.css')
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
-            ->resources([
-                config('filament-logger.activity_resource')
-            ])
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
             ->pages([
                 Pages\Dashboard::class,
@@ -88,7 +74,6 @@ class AdminPanelProvider extends PanelProvider
                 Authenticate::class,
             ])
             ->plugins([
-                \BezhanSalleh\FilamentExceptions\FilamentExceptionsPlugin::make(),
                 \BezhanSalleh\FilamentShield\FilamentShieldPlugin::make()
                     ->gridColumns([
                         'default' => 2,
