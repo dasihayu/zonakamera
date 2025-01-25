@@ -25,7 +25,7 @@
                             </a>
                             @foreach ($categories as $category)
                                 <a href="{{ route('products', ['category' => $category->name]) }}"
-                                    class="px-2 py-1 rounded-lg w-full {{ request('category') == $category->name ? 'bg-primary text-white' : 'bg-gray-200 text-black' }}">
+                                    class="px-4 py-2 text-sm rounded-lg w-full {{ request('category') == $category->name ? 'bg-primary text-white' : 'bg-gray-200 text-black' }}">
                                     {{ $category->name }}
                                 </a>
                             @endforeach

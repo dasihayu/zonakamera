@@ -46,7 +46,7 @@ class PageController extends Controller
             $query->where('title', 'like', '%' . $request->search . '%');
         }
 
-        $products = $query->paginate(60);
+        $products = $query->paginate(30);
 
         return view('pages.product', compact('page', 'products', 'categories'));
     }
