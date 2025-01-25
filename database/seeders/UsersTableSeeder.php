@@ -6,19 +6,41 @@ use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
-use Faker\Factory as Faker;
-use Illuminate\Support\Facades\Artisan;
 
 class UsersTableSeeder extends Seeder
 {
     public function run()
     {
-        $faker = Faker::create();
+        // Nonaktifkan foreign key constraints sementara
+        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
 
-        // Superadmin user
-        $sid = Str::uuid();
+        // Hapus data lama
+        DB::table('model_has_roles')->truncate();
+        DB::table('users')->truncate();
+        DB::table('roles')->truncate();
+
+        // Aktifkan kembali foreign key constraints
+        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+
+        // Buat role admin dan customer
+        $adminRoleId = DB::table('roles')->insertGetId([
+            'name' => 'admin',
+            'guard_name' => 'web',
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
+        $customerRoleId = DB::table('roles')->insertGetId([
+            'name' => 'customer',
+            'guard_name' => 'web',
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
+        // Buat pengguna admin
+        $adminId = Str::uuid();
         DB::table('users')->insert([
-            'id' => $sid,
+            'id' => $adminId,
             'username' => 'superadmin',
             'firstname' => 'Super',
             'lastname' => 'Admin',
@@ -29,31 +51,30 @@ class UsersTableSeeder extends Seeder
             'updated_at' => now(),
         ]);
 
-        // Bind superadmin user to FilamentShield
-        Artisan::call('shield:super-admin', ['--user' => $sid]);
+        DB::table('model_has_roles')->insert([
+            'role_id' => $adminRoleId,
+            'model_type' => 'App\Models\User',
+            'model_id' => $adminId,
+        ]);
 
-        $roles = DB::table('roles')->whereNot('name', 'super_admin')->get();
-        foreach ($roles as $role) {
-            for ($i = 0; $i < 10; $i++) {
-                $userId = Str::uuid();
-                DB::table('users')->insert([
-                    'id' => $userId,
-                    'username' => $faker->unique()->userName,
-                    'firstname' => $faker->firstName,
-                    'lastname' => $faker->lastName,
-                    'email' => $faker->unique()->safeEmail,
-                    'email_verified_at' => now(),
-                    'password' => Hash::make('password'),
-                    'created_at' => now(),
-                    'updated_at' => now(),
-                ]);
-                DB::table('model_has_roles')->insert([
-                    'role_id' => $role->id,
-                    'model_type' => 'App\Models\User',
-                    'model_id' => $userId,
-                ]);
-            }
-        }
+        // Buat pengguna customer
+        $customerId = Str::uuid();
+        DB::table('users')->insert([
+            'id' => $customerId,
+            'username' => 'customeruser',
+            'firstname' => 'Customer',
+            'lastname' => 'User',
+            'email' => 'user@zonakamera.com',
+            'email_verified_at' => now(),
+            'password' => Hash::make('password'),
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
+        DB::table('model_has_roles')->insert([
+            'role_id' => $customerRoleId,
+            'model_type' => 'App\Models\User',
+            'model_id' => $customerId,
+        ]);
     }
 }
-
