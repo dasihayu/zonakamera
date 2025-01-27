@@ -1,13 +1,13 @@
 @extends('layouts.layout')
 
-@section('title', 'My Bookings')
+@section('title', 'Bookings')
 
 @section('content')
 <div class="py-6 mx-auto max-w-7xl sm:px-6 lg:px-8">
     <div class="px-4 py-6 sm:px-0">
         <!-- Page Header -->
         <div class="flex items-center justify-between mb-6">
-            <h1 class="text-2xl font-bold text-gray-900">My Bookings</h1>
+            <h1 class="text-2xl font-bold text-gray-900">Bookings</h1>
             
             <!-- Filter Form -->
             <form action="{{ route('bookings.index') }}" method="GET" class="flex gap-4">
