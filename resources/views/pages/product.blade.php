@@ -3,21 +3,22 @@
 @section('title', 'Product')
 
 @section('content')
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <div class="flex flex-col items-center justify-center my-12 p-6 w-full">
-        <div class="flex flex-col md:flex-row w-full max-w-screen-lg">
+    <div class="flex flex-col items-center justify-center w-full p-6 my-12">
+        <div class="flex flex-col w-full max-w-screen-lg md:flex-row">
             <!-- Sidebar Filter -->
-            <div class="w-full md:w-1/4 p-4 bg-gray-100 rounded-lg">
+            <div class="w-full p-4 bg-gray-100 rounded-lg md:w-1/4">
                 <form action="{{ route('products') }}" method="GET">
                     <!-- Search -->
                     <div class="mb-4">
-                        <input type="text" name="search" value="{{ request('search') }}"
-                            placeholder="Search products..." class="w-full border border-gray-300 rounded-lg px-4 py-2" />
+                        <input type="text" name="search" value="{{ request('search') }}" placeholder="Search products..."
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg" />
                     </div>
 
                     <!-- Category Filter -->
                     <div class="mb-4">
-                        <p class="font-bold mb-2">Categories</p>
+                        <p class="mb-2 font-bold">Categories</p>
                         <div class="flex flex-wrap gap-2">
                             <a href="{{ route('products', ['category' => '']) }}"
                                 class="px-4 py-2 text-sm rounded-lg w-full {{ request('category') == '' ? 'bg-primary text-white' : 'bg-gray-200 text-black' }}">
@@ -34,7 +35,7 @@
 
                     <!-- Price Range -->
                     <div class="mb-4">
-                        <p class="font-bold mb-2">Price Range</p>
+                        <p class="mb-2 font-bold">Price Range</p>
                         <div class="relative">
                             <!-- Price Range Slider -->
                             <input type="range" name="price_range" id="priceRange" min="0" max="2000000"
@@ -43,23 +44,23 @@
 
                             <!-- Tooltip for displaying value -->
                             <div id="priceTooltip"
-                                class="absolute -top-8 left-0 bg-primary text-white text-xs rounded px-2 py-1 transform -translate-x-1/2 opacity-0 transition-opacity">
+                                class="absolute left-0 px-2 py-1 text-xs text-white transition-opacity transform -translate-x-1/2 rounded opacity-0 -top-8 bg-primary">
                                 Rp0
                             </div>
                         </div>
-                        <p class="text-sm mt-2 flex justify-between">
+                        <p class="flex justify-between mt-2 text-sm">
                             <span>Rp0</span>
                             <span>Rp2.000.000</span>
                         </p>
-                        <p class="text-sm mt-2 hidden">Selected Price: Rp<span
+                        <p class="hidden mt-2 text-sm">Selected Price: Rp<span
                                 id="priceLabel">{{ request('price_range', 2000000) }}</span></p>
                     </div>
 
                     <div class="mt-4">
-                        <button type="submit" class="px-4 py-2 bg-primary text-white rounded-lg">
+                        <button type="submit" class="px-4 py-2 text-white rounded-lg bg-primary">
                             Apply Price
                         </button>
-                        <a href="{{ route('products') }}" class="px-4 py-2 bg-gray-200 text-black rounded-lg">
+                        <a href="{{ route('products') }}" class="px-4 py-2 text-black bg-gray-200 rounded-lg">
                             Reset
                         </a>
                     </div>
@@ -69,12 +70,12 @@
             <!-- Products Section -->
             <div class="w-full md:w-3/4 md:ml-6">
                 @if ($products->count() > 0)
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="grid grid-cols-1 gap-6 md:grid-cols-3">
                         @foreach ($products as $product)
                             <div class="flex flex-col bg-[#f7f7f7] rounded-b-lg">
-                                <img src="{{ asset('storage/' . $product->image_url) }}" class="w-full  object-cover"
+                                <img src="{{ asset('storage/' . $product->image_url) }}" class="object-cover w-full"
                                     alt="Product Image">
-                                <div class="p-4 flex flex-col gap-2">
+                                <div class="flex flex-col gap-2 p-4">
                                     <div class="flex space-x-2">
                                         @foreach ($product->categories as $category)
                                             <span
@@ -83,7 +84,7 @@
                                             </span>
                                         @endforeach
                                     </div>
-                                    <p class="font-bold text-lg text-left truncate">{{ $product->title }}</p>
+                                    <p class="text-lg font-bold text-left truncate">{{ $product->title }}</p>
                                     <div class="flex items-center gap-1">
                                         @for ($i = 0; $i < 5; $i++)
                                             <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-yellow-400"
@@ -95,10 +96,12 @@
                                         <span class="text-sm text-gray-500">(5.0)</span>
                                     </div>
                                 </div>
-                                <div class="flex justify-between items-center p-4">
-                                    <p class="font-bold text-xl">Rp{{ number_format($product->price, 0, ',', '.') }}</p>
-                                    <button
-                                        class="w-8 h-8 flex items-center justify-center rounded-full bg-primary text-white hover:bg-primary-dark">+</button>
+                                <div class="flex items-center justify-between p-4">
+                                    <p class="text-xl font-bold">Rp{{ number_format($product->price, 0, ',', '.') }}</p>
+                                    <button onclick="addToCart({{ $product->id }})"
+                                        class="flex items-center justify-center w-8 h-8 text-white rounded-full bg-primary hover:bg-primary-dark">
+                                        +
+                                    </button>
                                 </div>
                             </div>
                         @endforeach
@@ -112,31 +115,31 @@
                                 <span class="px-4 py-2 text-gray-400 cursor-not-allowed">Previous</span>
                             @else
                                 <a href="{{ $products->previousPageUrl() }}"
-                                    class="px-4 py-2 text-primary hover:text-white hover:bg-primary-light rounded">Previous</a>
+                                    class="px-4 py-2 rounded text-primary hover:text-white hover:bg-primary-light">Previous</a>
                             @endif
 
                             {{-- Page Numbers --}}
                             @foreach ($products->getUrlRange(1, $products->lastPage()) as $pageNumber => $url)
                                 @if ($pageNumber == $products->currentPage())
                                     <span
-                                        class="px-4 py-2 bg-primary hover:text-white text-white rounded">{{ $pageNumber }}</span>
+                                        class="px-4 py-2 text-white rounded bg-primary hover:text-white">{{ $pageNumber }}</span>
                                 @else
                                     <a href="{{ $url }}"
-                                        class="px-4 py-2 text-primary hover:text-white hover:bg-primary-light rounded">{{ $pageNumber }}</a>
+                                        class="px-4 py-2 rounded text-primary hover:text-white hover:bg-primary-light">{{ $pageNumber }}</a>
                                 @endif
                             @endforeach
 
                             {{-- Next Page Link --}}
                             @if ($products->hasMorePages())
                                 <a href="{{ $products->nextPageUrl() }}"
-                                    class="px-4 py-2 text-primary hover:text-white hover:bg-primary-light rounded">Next</a>
+                                    class="px-4 py-2 rounded text-primary hover:text-white hover:bg-primary-light">Next</a>
                             @else
                                 <span class="px-4 py-2 text-gray-400 cursor-not-allowed">Next</span>
                             @endif
                         </div>
                     </div>
                 @else
-                    <div class="text-center mt-12">
+                    <div class="mt-12 text-center">
                         <p class="text-lg font-bold text-gray-600">No products found. Please adjust your filters.</p>
                     </div>
                 @endif
@@ -146,6 +149,7 @@
         </div>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         const rangeInput = document.getElementById('priceRange');
         const tooltip = document.getElementById('priceTooltip');
@@ -167,6 +171,73 @@
         rangeInput.addEventListener('mouseleave', () => {
             tooltip.style.opacity = '0';
         });
+
+        function addToCart(productId) {
+
+            const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content;
+
+            if (!csrfToken) {
+                Swal.fire('Error', 'CSRF token not found. Please refresh the page.', 'error');
+                return;
+            }
+            
+            Swal.fire({
+                title: 'Rental Details',
+                html: `
+            <div class="space-y-4 text-left w-md">
+                <div>
+                    <label for="start_date" class="w-full mb-2 font-bold">Start Date</label>
+                    <input type="datetime-local" id="start_date" class="max-w-xl p-2 border rounded swal2-input">
+                </div>
+                <div>
+                    <label for="end_date" class="w-full mb-2 font-bold">End Date</label>
+                    <input type="datetime-local" id="end_date" class="max-w-xl p-2 border rounded swal2-input">
+                </div>
+                <div>
+                    <label for="quantity" class="w-full mb-2 font-bold">Quantity</label>
+                    <input type="number" id="quantity" class="max-w-xl p-2 border rounded swal2-input" min="1" value="1">
+                </div>
+            </div>
+        `,
+                showCancelButton: true,
+                confirmButtonText: 'Add to Cart',
+                confirmButtonColor: '#1D4ED8', // primary color
+                cancelButtonText: 'Cancel',
+                cancelButtonColor: '#EF4444', // red color
+                preConfirm: () => {
+                    const startDate = document.getElementById('start_date').value;
+                    const endDate = document.getElementById('end_date').value;
+                    const quantity = document.getElementById('quantity').value;
+
+                    return fetch('/cart/add', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                            },
+                            body: JSON.stringify({
+                                product_id: productId,
+                                start_date: startDate,
+                                end_date: endDate,
+                                quantity: quantity
+                            })
+                        })
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error(response.statusText);
+                            }
+                            return response.json();
+                        })
+                        .catch(error => {
+                            Swal.showValidationMessage(`Request failed: ${error}`);
+                        });
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    Swal.fire('Added to cart!', '', 'success');
+                }
+            });
+        }
     </script>
 
 @endsection

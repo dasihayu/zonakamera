@@ -9,18 +9,25 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Booking extends Model
 {
     use HasFactory, SoftDeletes;
-    
+
     protected $fillable = [
-        'user_id', 
+        'user_id',
         'price',
-        'start_date', 
+        'start_date',
         'end_date'
+    ];
+
+    protected $casts = [
+        'start_date' => 'datetime',
+        'end_date' => 'datetime',
     ];
 
     public function products()
     {
         return $this->belongsToMany(Product::class, 'booking_product')
-            ->where('is_visible', true);
+            ->where('is_visible', true)
+            ->withPivot('quantity', 'price')
+            ->withTimestamps();
     }
 
     public function user()

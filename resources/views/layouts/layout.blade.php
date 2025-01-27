@@ -15,6 +15,7 @@
 
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css" />
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 
@@ -25,10 +26,10 @@
 
 <body class="flex flex-col min-h-screen font-manrope">
     <!-- Navbar -->
-    <nav class="fixed top-0 left-0 w-full bg-white z-50">
+    <nav class="fixed top-0 left-0 z-50 w-full bg-white">
         <div class="container flex items-center justify-between px-12 py-5 mx-auto">
             <img src="{{ asset('images/logo.png') }}" width="128" alt="Logo">
-            <ul class="flex space-x-6 items-center">
+            <ul class="flex items-center space-x-6">
                 <li>
                     <a href="{{ route('home') }}"
                         class="text-lg font-semibold text-gray-800 hover:text-gray-600 {{ Route::is('home') ? 'border-b-2 border-primary' : '' }}">
@@ -51,17 +52,17 @@
                 <!-- Menu untuk pengguna yang sudah login -->
                 @auth
                     <li>
-                        <a href="{{ route('products') }}"
-                            class="text-lg font-semibold text-gray-800 hover:text-gray-600 {{ Route::is('profile') ? 'border-b-2 border-primary' : '' }}">
-                            <i class="fas fa-user-circle mr-2"></i> Profile
+                        <a href="{{ route('bookings.index') }}"
+                            class="text-lg font-semibold text-gray-800 hover:text-gray-600 {{ Route::is('bookings.index') ? 'border-b-2 border-primary' : '' }}">My
+                            Bookings
                         </a>
                     </li>
                     <!-- Tombol Logout -->
                     <li>
                         <form action="{{ route('logout') }}" method="POST" class="inline">
                             @csrf
-                            <button type="submit" class="px-4 py-2 rounded-lg bg-gray-200 text-black">
-                                <i class="fas fa-sign-out-alt mr-2"></i>
+                            <button type="submit" class="px-4 py-2 text-black bg-gray-200 rounded-lg">
+                                <i class="mr-2 fas fa-sign-out-alt"></i>
                             </button>
                         </form>
                     </li>
@@ -70,11 +71,11 @@
                         <div class="flex flex-row gap-2">
 
                             <a href="{{ route('register') }}"
-                                class="text-lg font-semibold bg-primary text-white px-4 py-2 rounded-lg">
+                                class="px-4 py-2 text-lg font-semibold text-white rounded-lg bg-primary">
                                 Register
                             </a>
                             <a href="{{ route('login') }}"
-                                class="text-lg font-semibold text-gray-800 border border-primary px-4 py-2 rounded-lg">
+                                class="px-4 py-2 text-lg font-semibold text-gray-800 border rounded-lg border-primary">
                                 Login
                             </a>
                         </div>
@@ -91,10 +92,10 @@
         <div class="relative {{ request()->is('/') ? 'hidden' : '' }}">
             <!-- Background Image -->
             <img src="{{ asset('storage/' . $page->about_banner) }}" alt="Hero Image"
-                class="w-full max-h-80 object-cover blur-sm" />
+                class="object-cover w-full max-h-80 blur-sm" />
             <!-- Headline -->
-            <div class="absolute inset-0 flex flex-col items-center justify-center text-center mt-16">
-                <h1 class="text-6xl font-extrabold md:text-8xl drop-shadow-lg text-white">
+            <div class="absolute inset-0 flex flex-col items-center justify-center mt-16 text-center">
+                <h1 class="text-6xl font-extrabold text-white md:text-8xl drop-shadow-lg">
                     @yield('title')
                 </h1>
             </div>
@@ -107,8 +108,8 @@
     <!-- Footer -->
     <footer class="bg-[#F7F7F7] text-primary bottom-0">
         <!-- Main Footer Content -->
-        <div class="container mx-auto px-6 py-12">
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div class="container px-6 py-12 mx-auto">
+            <div class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
                 <!-- Company Info -->
                 <div class="space-y-4">
                     <h3 class="text-2xl font-bold">Zonakamera</h3>
@@ -192,12 +193,12 @@
 
         <!-- Bottom Bar -->
         <div class="border-t border-gray-800">
-            <div class="container mx-auto px-6 py-4">
-                <div class="flex flex-col md:flex-row justify-between items-center">
-                    <p class="text-gray-400 text-sm">© 2025 Zonakamera. All rights reserved.</p>
-                    <div class="flex space-x-6 mt-4 md:mt-0">
-                        <a href="#" class="text-gray-400 hover:text-primary text-sm">Privacy Policy</a>
-                        <a href="#" class="text-gray-400 hover:text-primary text-sm">Terms of Service</a>
+            <div class="container px-6 py-4 mx-auto">
+                <div class="flex flex-col items-center justify-between md:flex-row">
+                    <p class="text-sm text-gray-400">© 2025 Zonakamera. All rights reserved.</p>
+                    <div class="flex mt-4 space-x-6 md:mt-0">
+                        <a href="#" class="text-sm text-gray-400 hover:text-primary">Privacy Policy</a>
+                        <a href="#" class="text-sm text-gray-400 hover:text-primary">Terms of Service</a>
                     </div>
                 </div>
             </div>
@@ -206,6 +207,7 @@
 
     <!-- Base Scripts -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Swiper/8.4.5/swiper-bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     @vite('resources/js/app.js')
 
     <!-- Additional Scripts Stack -->
