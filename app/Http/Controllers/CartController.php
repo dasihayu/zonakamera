@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Cart;
 use App\Models\Page;
 use App\Models\Product;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class CartController extends Controller
@@ -43,8 +44,11 @@ class CartController extends Controller
             ->get();
 
         $totalPrice = $cartItems->sum(function ($item) {
-            $days = \Carbon\Carbon::parse($item->start_date)->diffInDays(\Carbon\Carbon::parse($item->end_date));
-            return $item->product->price * $item->quantity * $days;
+            $startDate = Carbon::parse($item->start_date);
+            $endDate = Carbon::parse($item->end_date);
+            $totalDays = max($startDate->diffInDays($endDate), 1); // Minimum 1 day
+
+            return $item->product->price * $item->quantity * $totalDays;
         });
 
         return view('pages.cart.index', compact('cartItems', 'totalPrice', 'page'));
