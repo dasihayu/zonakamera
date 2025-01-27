@@ -132,7 +132,7 @@ class PageResource extends Resource
                                         Forms\Components\FileUpload::make('product_banner')
                                             ->label('Hero Image')
                                             ->disk('public')
-                                            ->directory('pages/about')
+                                            ->directory('pages/product')
                                             ->required(),
                                     ])
                                     ->compact(),
@@ -146,9 +146,9 @@ class PageResource extends Resource
                                     ->description('Will appear on the booking page')
                                     ->schema([
                                         Forms\Components\FileUpload::make('booking_banner')
-                                            ->label('Booking Image')
+                                            ->label('Hero Image')
                                             ->disk('public')
-                                            ->directory('pages/about')
+                                            ->directory('pages/booking')
                                             ->required(),
                                     ])
                                     ->compact(),
@@ -162,9 +162,39 @@ class PageResource extends Resource
                                     ->description('Will appear on the cart page')
                                     ->schema([
                                         Forms\Components\FileUpload::make('cart_banner')
-                                            ->label('Cart Image')
+                                            ->label('Hero Image')
                                             ->disk('public')
-                                            ->directory('pages/about')
+                                            ->directory('pages/cart')
+                                            ->required(),
+                                    ])
+                                    ->compact(),
+                            ]),
+                        Forms\Components\Tabs\Tab::make('Info')
+                            ->icon('heroicon-o-information-circle')
+                            ->schema([
+                                Forms\Components\Section::make('Info Banner')
+                                    ->icon('heroicon-o-information-circle')
+                                    ->description('Will appear on the info page')
+                                    ->schema([
+                                        Forms\Components\FileUpload::make('info_banner')
+                                            ->label('Hero Image')
+                                            ->disk('public')
+                                            ->directory('pages/info')
+                                            ->required(),
+                                    ])
+                                    ->compact(),
+                            ]),
+                        Forms\Components\Tabs\Tab::make('Featured')
+                            ->icon('heroicon-o-inbox-stack')
+                            ->schema([
+                                Forms\Components\Section::make('Featured Banner')
+                                    ->icon('heroicon-o-information-circle')
+                                    ->description('Will appear on the cart page')
+                                    ->schema([
+                                        Forms\Components\FileUpload::make('featured_banner')
+                                            ->label('Hero Image')
+                                            ->disk('public')
+                                            ->directory('pages/featured')
                                             ->required(),
                                     ])
                                     ->compact(),
