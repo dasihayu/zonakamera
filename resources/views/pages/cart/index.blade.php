@@ -2,6 +2,17 @@
 @section('title', 'Cart')
 
 @section('content')
+    <!-- Hero Section -->
+    <div class="relative">
+        <!-- Background Image -->
+        <img src="{{ asset('storage/' . $page->cart_banner) }}" alt="Hero Image" class="object-cover w-full max-h-80 blur-sm" />
+        <!-- Headline -->
+        <div class="absolute inset-0 flex flex-col items-center justify-center mt-16 text-center">
+            <h1 class="text-6xl font-extrabold text-white md:text-8xl drop-shadow-lg">
+                @yield('title')
+            </h1>
+        </div>
+    </div>
     <div class="container p-6 mx-auto">
 
         @if ($cartItems->count() > 0)
