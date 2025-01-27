@@ -3,6 +3,18 @@
 @section('title', 'Product')
 
 @section('content')
+    <!-- Hero Section -->
+    <div class="relative {{ request()->is('/') ? 'hidden' : '' }}">
+        <!-- Background Image -->
+        <img src="{{ asset('storage/' . $page->product_banner) }}" alt="Hero Image"
+            class="object-cover w-full max-h-80 blur-sm" />
+        <!-- Headline -->
+        <div class="absolute inset-0 flex flex-col items-center justify-center mt-16 text-center">
+            <h1 class="text-6xl font-extrabold text-white md:text-8xl drop-shadow-lg">
+                @yield('title')
+            </h1>
+        </div>
+    </div>
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <div class="flex flex-col items-center justify-center w-full p-6 my-12">
@@ -12,8 +24,8 @@
                 <form action="{{ route('products') }}" method="GET">
                     <!-- Search -->
                     <div class="mb-4">
-                        <input type="text" name="search" value="{{ request('search') }}" placeholder="Search products..."
-                            class="w-full px-4 py-2 border border-gray-300 rounded-lg" />
+                        <input type="text" name="search" value="{{ request('search') }}"
+                            placeholder="Search products..." class="w-full px-4 py-2 border border-gray-300 rounded-lg" />
                     </div>
 
                     <!-- Category Filter -->
@@ -180,7 +192,7 @@
                 Swal.fire('Error', 'CSRF token not found. Please refresh the page.', 'error');
                 return;
             }
-            
+
             Swal.fire({
                 title: 'Rental Details',
                 html: `

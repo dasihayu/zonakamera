@@ -125,12 +125,44 @@ class PageResource extends Resource
                         Forms\Components\Tabs\Tab::make('Products')
                             ->icon('heroicon-o-camera')
                             ->schema([
-                                Forms\Components\Section::make('banner Banner')
+                                Forms\Components\Section::make('Product Banner')
                                     ->icon('heroicon-o-information-circle')
                                     ->description('Will appear on the product page')
                                     ->schema([
                                         Forms\Components\FileUpload::make('product_banner')
                                             ->label('Hero Image')
+                                            ->disk('public')
+                                            ->directory('pages/about')
+                                            ->required(),
+                                    ])
+                                    ->compact(),
+                            ]),
+
+                        Forms\Components\Tabs\Tab::make('Bookings')
+                            ->icon('heroicon-o-book-open')
+                            ->schema([
+                                Forms\Components\Section::make('Booking Banner')
+                                    ->icon('heroicon-o-information-circle')
+                                    ->description('Will appear on the booking page')
+                                    ->schema([
+                                        Forms\Components\FileUpload::make('booking_banner')
+                                            ->label('Booking Image')
+                                            ->disk('public')
+                                            ->directory('pages/about')
+                                            ->required(),
+                                    ])
+                                    ->compact(),
+                            ]),
+
+                        Forms\Components\Tabs\Tab::make('Cart')
+                            ->icon('heroicon-o-shopping-cart')
+                            ->schema([
+                                Forms\Components\Section::make('Cart Banner')
+                                    ->icon('heroicon-o-information-circle')
+                                    ->description('Will appear on the cart page')
+                                    ->schema([
+                                        Forms\Components\FileUpload::make('cart_banner')
+                                            ->label('Cart Image')
                                             ->disk('public')
                                             ->directory('pages/about')
                                             ->required(),

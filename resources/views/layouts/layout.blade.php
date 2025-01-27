@@ -57,14 +57,15 @@
                             Bookings
                         </a>
                     </li>
-                    <!-- Tombol Logout -->
+                    <!-- Tombol Cart -->
                     <li>
-                        <form action="{{ route('logout') }}" method="POST" class="inline">
-                            @csrf
-                            <button type="submit" class="px-4 py-2 text-black bg-gray-200 rounded-lg">
-                                <i class="mr-2 fas fa-sign-out-alt"></i>
-                            </button>
-                        </form>
+                        <a href="{{ route('cart.index') }}">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                stroke="currentColor" class="size-6">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 0 0-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 0 0-16.536-1.84M7.5 14.25 5.106 5.272M6 20.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Zm12.75 0a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z" />
+                            </svg>
+                        </a>
                     </li>
                 @else
                     <li>
@@ -88,20 +89,6 @@
 
     <!-- Main Content -->
     <main class="flex-grow">
-        <!-- Hero Section -->
-        <div class="relative {{ request()->is('/') ? 'hidden' : '' }}">
-            <!-- Background Image -->
-            <img src="{{ asset('storage/' . $page->about_banner) }}" alt="Hero Image"
-                class="object-cover w-full max-h-80 blur-sm" />
-            <!-- Headline -->
-            <div class="absolute inset-0 flex flex-col items-center justify-center mt-16 text-center">
-                <h1 class="text-6xl font-extrabold text-white md:text-8xl drop-shadow-lg">
-                    @yield('title')
-                </h1>
-            </div>
-        </div>
-
-
         @yield('content')
     </main>
 
