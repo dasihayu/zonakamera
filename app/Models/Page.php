@@ -26,5 +26,7 @@ class Page extends Model
         'featured_banner',
         'member_banner',
         'info_banner',
+        'booking_banner',
+        'cart_banner',
     ];
 }
