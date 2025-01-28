@@ -84,7 +84,7 @@
                                 </div>
                                 <div class="text-right">
                                     <p class="text-sm font-medium text-gray-900">
-                                        Rp{{ number_format($product->pivot->price * $product->pivot->quantity, 0, ',', '.') }}
+                                        Rp{{ number_format($product->pivot->price, 0, ',', '.') }}
                                     </p>
                                 </div>
                             </div>
