@@ -23,6 +23,7 @@
                         <div>
                             <h3 class="font-bold">{{ $item->product->title }}</h3>
                             <p>Quantity: {{ $item->quantity }}</p>
+                            <p>Price per day: Rp{{ number_format($item->product->price, 0, ',', '.') }}</p>
                             <p>Rental Period: {{ \Carbon\Carbon::parse($item->start_date)->translatedFormat('d F Y') }} to
                                 {{ \Carbon\Carbon::parse($item->end_date)->translatedFormat('d F Y') }}</p>
                         </div>
