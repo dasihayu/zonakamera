@@ -110,10 +110,17 @@
                                 </div>
                                 <div class="flex items-center justify-between p-4">
                                     <p class="text-xl font-bold">Rp{{ number_format($product->price, 0, ',', '.') }}</p>
-                                    <button onclick="addToCart({{ $product->id }})"
-                                        class="flex items-center justify-center w-8 h-8 text-white rounded-full bg-primary hover:bg-primary-dark">
-                                        +
-                                    </button>
+                                    @if (Auth::check())
+                                        <button onclick="addToCart({{ $product->id }})"
+                                            class="flex items-center justify-center w-8 h-8 text-white rounded-full bg-primary hover:bg-primary-dark">
+                                            +
+                                        </button>
+                                    @else
+                                        <a href="{{ route('login') }}"
+                                            class="flex items-center justify-center w-8 h-8 text-white rounded-full bg-primary hover:bg-primary-dark">
+                                            +
+                                        </a>
+                                    @endif
                                 </div>
                             </div>
                         @endforeach
