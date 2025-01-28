@@ -4,10 +4,18 @@ namespace App\Observers;
 
 use App\Models\Booking;
 use App\Services\FonnteService;
+use App\Services\GoogleSheetsService;
 use Carbon\Carbon;
 
 class BookingObserver
 {
+
+    protected $googleSheetsService;
+
+    public function __construct(GoogleSheetsService $googleSheetsService)
+    {
+        $this->googleSheetsService = $googleSheetsService;
+    }
     /**
      * Handle the Booking "created" event.
      */
@@ -32,5 +40,11 @@ class BookingObserver
         ];
 
         $response = FonnteService::sendMessage($data);
+
+        // Make sure relations are loaded
+        $booking->load(['products', 'user']);
+
+        // Add to Google Sheets
+        $this->googleSheetsService->appendBookingData($booking);
     }
 }
