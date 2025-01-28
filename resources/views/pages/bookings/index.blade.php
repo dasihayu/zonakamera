@@ -93,10 +93,36 @@
                         @endforeach
                     </ul>
                 </div>
-
                 <!-- Pagination -->
-                <div class="mt-6">
-                    {{ $bookings->links() }}
+                <div class="mt-8">
+                    <div class="flex items-center justify-center gap-4">
+                        {{-- Previous Page Link --}}
+                        @if ($bookings->onFirstPage())
+                            <span class="px-4 py-2 text-gray-400 cursor-not-allowed">Previous</span>
+                        @else
+                            <a href="{{ $bookings->previousPageUrl() }}"
+                                class="px-4 py-2 rounded text-primary hover:text-white hover:bg-primary-light">Previous</a>
+                        @endif
+
+                        {{-- Page Numbers --}}
+                        @foreach ($bookings->getUrlRange(1, $bookings->lastPage()) as $pageNumber => $url)
+                            @if ($pageNumber == $bookings->currentPage())
+                                <span
+                                    class="px-4 py-2 text-white rounded bg-primary hover:text-white">{{ $pageNumber }}</span>
+                            @else
+                                <a href="{{ $url }}"
+                                    class="px-4 py-2 rounded text-primary hover:text-white hover:bg-primary-light">{{ $pageNumber }}</a>
+                            @endif
+                        @endforeach
+
+                        {{-- Next Page Link --}}
+                        @if ($bookings->hasMorePages())
+                            <a href="{{ $bookings->nextPageUrl() }}"
+                                class="px-4 py-2 rounded text-primary hover:text-white hover:bg-primary-light">Next</a>
+                        @else
+                            <span class="px-4 py-2 text-gray-400 cursor-not-allowed">Next</span>
+                        @endif
+                    </div>
                 </div>
             @else
                 <div class="py-12 text-center">

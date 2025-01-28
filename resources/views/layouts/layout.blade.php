@@ -53,7 +53,7 @@
                 @auth
                     <li>
                         <a href="{{ route('bookings.index') }}"
-                            class="text-lg font-semibold text-gray-800 hover:text-gray-600 {{ Route::is('bookings.index') ? 'border-b-2 border-primary' : '' }}">My
+                            class="text-lg font-semibold text-gray-800 hover:text-gray-600 {{ request()->is('bookings*') ? 'border-b-2 border-primary' : '' }}">My
                             Bookings
                         </a>
                     </li>
