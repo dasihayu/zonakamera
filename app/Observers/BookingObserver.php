@@ -15,24 +15,22 @@ class BookingObserver
     {
         $user = $booking->user;
         $products = $booking->products;
-        // if (!$user || !$user->phone || $products->isEmpty()) {
-        //     \Log::warning("Data tidak lengkap untuk Booking ID: {$booking->id}");
-        //     return;
-        // }
-        $productNames = $products->pluck('title')->join(', ');
-        
-        $formattedStartDate = Carbon::parse($booking->start_date)->translatedFormat('l, d F Y');
-        $formattedEndDate = Carbon::parse($booking->end_date)->translatedFormat('l, d F Y');
+
+        if (!$user) {
+            \Log::warning("User tidak ditemukan untuk Booking ID: {$booking->id}");
+            return;
+        }
+
+        if (!$user->phone) {
+            \Log::warning("Nomor telepon tidak ditemukan untuk User ID: {$user->id} pada Booking ID: {$booking->id}");
+            return;
+        }
 
         $data = [
             'target' => $user->phone,
-            'message' => "Halo {$user->name}, booking Anda dengan item berikut telah berhasil dibuat: {$productNames} untuk tanggal {$formattedStartDate} sampai {$formattedEndDate} Admin akan segera menghubungi anda untuk ketersediaan barang.",
+            'message' => "Halo {$user->name}, terimakasih sudah melakukan booking di zonakamera. Admin akan segera menghubungi anda untuk ketersediaan barang.",
         ];
 
         $response = FonnteService::sendMessage($data);
-
-        if ($response['status'] !== 'success') {
-            \Log::error("Gagal mengirim pesan untuk Booking ID: {$booking->id}", $response);
-        }
     }
 }
