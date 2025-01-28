@@ -128,9 +128,9 @@
                 <div class="space-y-4">
                     <h4 class="text-lg font-semibold">Quick Links</h4>
                     <ul class="space-y-2">
-                        <li><a href="#" class="text-gray-400 hover:text-primary">Home</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-primary">About Us</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-primary">Products</a></li>
+                        <li><a href="{{ url('') }}" class="text-gray-400 hover:text-primary">Home</a></li>
+                        <li><a href="{{ url('about') }}" class="text-gray-400 hover:text-primary">About Us</a></li>
+                        <li><a href="{{ url('products') }}" class="text-gray-400 hover:text-primary">Products</a></li>
                         <li><a href="#" class="text-gray-400 hover:text-primary">Contact</a></li>
                     </ul>
                 </div>
@@ -139,10 +139,10 @@
                 <div class="space-y-4">
                     <h4 class="text-lg font-semibold">Products</h4>
                     <ul class="space-y-2">
-                        <li><a href="#" class="text-gray-400 hover:text-primary">Cameras</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-primary">Lenses</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-primary">Audio Equipment</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-primary">Stabilizers</a></li>
+                        <li><a href="{{ url('products?category=Camera%20Sony') }}" class="text-gray-400 hover:text-primary">Cameras</a></li>
+                        <li><a href="{{ url('products?category=Lenses%20Sony') }}" class="text-gray-400 hover:text-primary">Lenses</a></li>
+                        <li><a href="{{ url('products?category=Audio') }}" class="text-gray-400 hover:text-primary">Audio Equipment</a></li>
+                        <li><a href="{{ url('products?category=Gimbal%20Stabilizer') }}" class="text-gray-400 hover:text-primary">Stabilizers</a></li>
                     </ul>
                 </div>
 
