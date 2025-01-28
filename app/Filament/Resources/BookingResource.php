@@ -94,6 +94,9 @@ class BookingResource extends Resource
                 Tables\Columns\TextColumn::make('user.username')
                     ->label('User'),
 
+                Tables\Columns\TextColumn::make('user.phone')
+                    ->label('Phone'),
+
                 Tables\Columns\TextColumn::make('products.title')
                     ->label('Products')
                     ->listWithLineBreaks(),
