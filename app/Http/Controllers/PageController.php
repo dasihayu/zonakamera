@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Page;
 use App\Models\Product;
+use App\Models\Video;
 use App\Models\ProductCategory;
 use Illuminate\Http\Request;
 
@@ -12,9 +13,10 @@ class PageController extends Controller
     public function home()
     {
         $page = Page::first();
+        $videos = Video::where('is_active', true)->get();
         $products = Product::with('categories')->where('is_visible',  true)->take(5)->get();
 
-        return view('pages.home',  compact('page',  'products'));
+        return view('pages.home',  compact('page',  'products', 'videos'));
     }
 
     public function about()
