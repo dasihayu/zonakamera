@@ -17,7 +17,7 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const videoSwiper = new Swiper('.video-swiper', {
-                slidesPerView: 3,
+                slidesPerView: 2,
                 spaceBetween: 30,
                 loop: true,
                 pagination: {
@@ -34,7 +34,7 @@
                         spaceBetween: 20,
                     },
                     768: {
-                        slidesPerView: 3,
+                        slidesPerView: 2,
                         spaceBetween: 30,
                     },
                     1024: {
