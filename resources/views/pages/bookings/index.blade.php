@@ -22,13 +22,43 @@
             <div class="container p-6 mx-auto">
                 <div class="flex">
                     <!-- User Profile Section -->
-                    <div class="w-1/4 p-4 bg-white rounded shadow">
-                        <h2 class="mb-4 text-xl font-bold">User Profile</h2>
-                        <p>{{ auth()->user()->name }}</p>
-                        <p>{{ auth()->user()->email }}</p>
-                        <p>{{ auth()->user()->phone }}</p>
-                        <!-- Add more profile details as needed -->
+                    <div class="w-1/4 p-6 bg-white rounded-lg shadow-md">
+                        <div class="flex flex-col items-center text-center">
+                            <div class="w-20 h-20 mb-4 overflow-hidden border-4 rounded-full border-primary">
+                                <img src="{{ auth()->user()->avatar ? asset('storage/' . auth()->user()->avatar) : 'https://ui-avatars.com/api/?name=' . urlencode(auth()->user()->name) }}"
+                                    alt="User Avatar" class="object-cover w-full h-full">
+                            </div>
+                            <p class="text-lg font-semibold text-gray-900">{{ auth()->user()->name }}</p>
+                            <p class="text-sm text-gray-500">{{ auth()->user()->email }}</p>
+                        </div>
+                        <div class="mt-4 space-y-2">
+                            <div class="flex items-center gap-2 p-2 text-gray-600">
+                                <svg class="w-5 h-5 text-primary" fill="none" stroke="currentColor" stroke-width="2"
+                                    viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                        d="M3 10s4-6 9-6 9 6 9 6-4 6-9 6-9-6-9-6z" />
+                                    <circle cx="12" cy="10" r="3" />
+                                </svg>
+                                <span>{{ auth()->user()->phone ?: 'No phone number' }}</span>
+                            </div>
+                            <div class="flex items-center gap-2 p-2 text-gray-600">
+                                <svg class="w-5 h-5 text-primary" fill="none" stroke="currentColor" stroke-width="2"
+                                    viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M4 4h16v16H4V4z" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M16 2v4M8 2v4m-4 4h16" />
+                                </svg>
+                                <span>Joined since {{ auth()->user()->created_at->format('M Y') }}</span>
+                            </div>
+                            <form action="{{ route('logout') }}" method="POST" class="p-2 bg-red-500 rounded-md">
+                                @csrf
+                                <button type="submit" class="flex items-center w-full gap-2 text-white ">
+                                    <i class="mr-2 fas fa-sign-out-alt"></i>
+                                    <span>Logout</span>
+                                </button>
+                            </form>
+                        </div>
                     </div>
+
 
                     <!-- Bookings List Section -->
                     <div class="w-3/4 p-4 ml-4 bg-white rounded shadow">
@@ -60,21 +90,52 @@
                         @if ($bookings->count() > 0)
                             <div class="space-y-4">
                                 @foreach ($bookings as $booking)
-                                    <div class="p-4 border rounded">
-                                        <h3 class="font-bold">Booking ID: {{ $booking->id }}</h3>
-                                        <p>Total Price: Rp{{ number_format($booking->price, 0, ',', '.') }}</p>
-                                        <div class="flex items-center gap-2 text-sm text-gray-500">
-                                            <span>{{ $booking->start_date->format('d M Y') }}</span>
-                                            <span>-</span>
-                                            <span>{{ $booking->end_date->format('d M Y') }}</span>
-                                        </div>
-                                        <p>Products:</p>
-                                        <ul>
-                                            @foreach ($booking->products as $product)
-                                                <li>{{ $product->title }} (Qty: {{ $product->pivot->quantity }}, Price:
-                                                    Rp{{ number_format($product->pivot->price, 0, ',', '.') }})</li>
-                                            @endforeach
-                                        </ul>
+                                    <div class="p-2 border rounded-lg border-primary">
+                                        <a href="{{ route('bookings.show', $booking) }}"
+                                            class="relative block hover:bg-gray-50">
+                                            <div class="px-4 py-4 sm:px-6">
+                                                {{-- Badge di pojok kanan atas --}}
+                                                <div
+                                                    class="absolute top-2 right-2 px-3 py-1 text-xs font-semibold text-white rounded-full 
+                    {{ $booking->is_returned ? 'bg-green-500' : 'bg-red-500' }}">
+                                                    {{ $booking->is_returned ? 'Returned' : 'Not Returned' }}
+                                                </div>
+
+                                                <div class="flex items-center justify-between">
+                                                    <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-4">
+                                                        <p class="text-sm font-medium truncate text-primary">
+                                                            Booking #{{ $booking->id }}
+                                                        </p>
+                                                        <div class="flex items-center gap-2 text-sm text-gray-500">
+                                                            <span>{{ $booking->start_date->format('d M Y') }}</span>
+                                                            <span>-</span>
+                                                            <span>{{ $booking->end_date->format('d M Y') }}</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="mt-2 sm:flex sm:justify-between">
+                                                    <div class="sm:flex">
+                                                        <div class="flex items-center text-sm text-gray-500">
+                                                            <div class="flex flex-wrap gap-2">
+                                                                @foreach ($booking->products as $product)
+                                                                    <span
+                                                                        class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                                                                        {{ $product->title }}
+                                                                    </span>
+                                                                @endforeach
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    {{-- Total harga di pojok kanan bawah --}}
+                                                    <div class="flex items-center mt-2 text-sm text-gray-500 sm:mt-0">
+                                                        <p class="font-medium text-gray-900">
+                                                            Rp{{ number_format($booking->price, 0, ',', '.') }}
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </a>
                                     </div>
                                 @endforeach
                             </div>
