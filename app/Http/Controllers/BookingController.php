@@ -27,8 +27,9 @@ class BookingController extends Controller
         }
 
         $bookings = $query->paginate(10);
+        $user = auth()->user();
 
-        return view('pages.bookings.index', compact('bookings', 'page'));
+        return view('pages.bookings.index', compact('bookings', 'page', 'user'));
     }
 
     public function createBooking(Request $request)
