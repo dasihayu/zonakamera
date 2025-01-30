@@ -7,9 +7,9 @@
     <div class="relative">
         <!-- Background Image -->
         <img src="{{ asset('storage/' . $page->booking_banner) }}" alt="Hero Image"
-            class="object-cover w-full max-h-80 blur-sm" />
+            class="object-cover w-full max-h-80 md:max-h-96 lg:max-h-[600px] blur-sm" />
         <!-- Headline -->
-        <div class="absolute inset-0 flex flex-col items-center justify-center mt-16 text-center">
+        <div class="absolute inset-0 flex flex-col items-center justify-center text-center">
             <h1 class="text-6xl font-extrabold text-white md:text-8xl drop-shadow-lg">
                 @yield('title')
             </h1>
@@ -17,12 +17,10 @@
     </div>
     <div class="py-6 mx-auto max-w-7xl sm:px-6 lg:px-8">
         <div class="px-4 py-6 sm:px-0">
-
-
             <div class="container p-6 mx-auto">
-                <div class="flex">
+                <div class="flex flex-col gap-6 md:flex-row">
                     <!-- User Profile Section -->
-                    <div class="w-1/4 p-6 bg-white rounded-lg shadow-md">
+                    <div class="w-full p-6 bg-white rounded-lg shadow-md md:w-1/4">
                         <div class="flex flex-col items-center text-center">
                             <div class="w-20 h-20 mb-4 overflow-hidden border-4 rounded-full border-primary">
                                 <img src="{{ auth()->user()->avatar ? asset('storage/' . auth()->user()->avatar) : 'https://ui-avatars.com/api/?name=' . urlencode(auth()->user()->name) }}"
@@ -59,15 +57,14 @@
                         </div>
                     </div>
 
-
                     <!-- Bookings List Section -->
-                    <div class="w-3/4 p-4 ml-4 bg-white rounded shadow">
+                    <div class="w-full p-4 bg-white rounded shadow md:w-3/4">
                         <!-- Page Header -->
                         <div class="flex items-center justify-between mb-6">
                             <h1 class="text-2xl font-bold text-gray-900">Your Bookings</h1>
 
                             <!-- Filter Form -->
-                            <form action="{{ route('bookings.index') }}" method="GET" class="flex gap-4">
+                            <form action="{{ route('bookings.index') }}" method="GET" class="hidden gap-4 md:flex">
                                 <div class="flex items-center gap-2">
                                     <input type="date" name="start_date" value="{{ request('start_date') }}"
                                         class="border-gray-300 rounded-md shadow-sm focus:ring-primary focus:border-primary">
@@ -141,33 +138,36 @@
                             </div>
 
                             <!-- Pagination -->
-                            <div class="flex items-center justify-center gap-4 mt-6">
-                                {{-- Previous Page Link --}}
-                                @if ($bookings->onFirstPage())
-                                    <span class="px-4 py-2 text-gray-400 cursor-not-allowed">Previous</span>
-                                @else
-                                    <a href="{{ $bookings->previousPageUrl() }}"
-                                        class="px-4 py-2 rounded text-primary hover:text-white hover:bg-primary-light">Previous</a>
-                                @endif
-
-                                {{-- Page Numbers --}}
-                                @foreach ($bookings->getUrlRange(1, $bookings->lastPage()) as $pageNumber => $url)
-                                    @if ($pageNumber == $bookings->currentPage())
+                            <div class="mt-8">
+                                <div class="flex flex-wrap items-center justify-center gap-2 md:gap-4">
+                                    {{-- Previous Page Link --}}
+                                    @if ($bookings->onFirstPage())
                                         <span
-                                            class="px-4 py-2 text-white rounded bg-primary hover:text-white">{{ $pageNumber }}</span>
+                                            class="px-2 py-1 text-gray-400 cursor-not-allowed md:px-4 md:py-2">Previous</span>
                                     @else
-                                        <a href="{{ $url }}"
-                                            class="px-4 py-2 rounded text-primary hover:text-white hover:bg-primary-light">{{ $pageNumber }}</a>
+                                        <a href="{{ $bookings->previousPageUrl() }}"
+                                            class="px-2 py-1 rounded text-primary hover:text-white hover:bg-primary-light md:px-4 md:py-2">Previous</a>
                                     @endif
-                                @endforeach
 
-                                {{-- Next Page Link --}}
-                                @if ($bookings->hasMorePages())
-                                    <a href="{{ $bookings->nextPageUrl() }}"
-                                        class="px-4 py-2 rounded text-primary hover:text-white hover:bg-primary-light">Next</a>
-                                @else
-                                    <span class="px-4 py-2 text-gray-400 cursor-not-allowed">Next</span>
-                                @endif
+                                    {{-- Page Numbers --}}
+                                    @foreach ($bookings->getUrlRange(1, $bookings->lastPage()) as $pageNumber => $url)
+                                        @if ($pageNumber == $bookings->currentPage())
+                                            <span
+                                                class="px-2 py-1 text-white rounded bg-primary hover:text-white md:px-4 md:py-2">{{ $pageNumber }}</span>
+                                        @else
+                                            <a href="{{ $url }}"
+                                                class="px-2 py-1 rounded text-primary hover:text-white hover:bg-primary-light md:px-4 md:py-2">{{ $pageNumber }}</a>
+                                        @endif
+                                    @endforeach
+
+                                    {{-- Next Page Link --}}
+                                    @if ($bookings->hasMorePages())
+                                        <a href="{{ $bookings->nextPageUrl() }}"
+                                            class="px-2 py-1 rounded text-primary hover:text-white hover:bg-primary-light md:px-4 md:py-2">Next</a>
+                                    @else
+                                        <span class="px-2 py-1 text-gray-400 cursor-not-allowed md:px-4 md:py-2">Next</span>
+                                    @endif
+                                </div>
                             </div>
                         @else
                             <div class="py-12 text-center">

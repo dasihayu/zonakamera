@@ -5,45 +5,48 @@
     <!-- Hero Section -->
     <div class="relative">
         <!-- Background Image -->
-        <img src="{{ asset('storage/' . $page->cart_banner) }}" alt="Hero Image" class="object-cover w-full max-h-80 blur-sm" />
+        <img src="{{ asset('storage/' . $page->cart_banner) }}" alt="Hero Image"
+            class="object-cover w-full max-h-80 md:max-h-96 blur-sm" />
         <!-- Headline -->
-        <div class="absolute inset-0 flex flex-col items-center justify-center mt-16 text-center">
+        <div class="absolute inset-0 flex flex-col items-center justify-center text-center">
             <h1 class="text-6xl font-extrabold text-white md:text-8xl drop-shadow-lg">
                 @yield('title')
             </h1>
         </div>
     </div>
     <div class="container p-6 mx-auto">
-
         @if ($cartItems->count() > 0)
             <h1 class="mb-6 text-2xl font-bold">Your Cart</h1>
             <div class="space-y-4">
                 @foreach ($cartItems as $item)
-                    <div class="flex items-center justify-between p-4 border rounded">
-                        <div>
-                            <h3 class="font-bold">{{ $item->product->title }}</h3>
+                    <div
+                        class="flex flex-col items-center justify-between p-4 space-y-4 border rounded sm:flex-row sm:space-y-0 sm:space-x-4">
+                        <div class="w-full sm:w-3/4">
+                            <h3 class="text-lg font-bold">{{ $item->product->title }}</h3>
                             <p>Quantity: {{ $item->quantity }}</p>
                             <p>Price per day: Rp{{ number_format($item->product->price, 0, ',', '.') }}</p>
                             <p>Rental Period: {{ \Carbon\Carbon::parse($item->start_date)->translatedFormat('d F Y') }} to
                                 {{ \Carbon\Carbon::parse($item->end_date)->translatedFormat('d F Y') }}</p>
                         </div>
-                        <div class="flex items-center">
-                            <p class="mr-4 font-bold">
-                                Rp{{ number_format($item->product->price * $item->quantity, 0, ',', '.') }}</p>
+                        <div class="flex items-center justify-between w-full sm:justify-end sm:w-1/4">
+                            <p class="mr-4 text-xl font-bold">
+                                Rp{{ number_format($item->product->price * $item->quantity, 0, ',', '.') }}
+                            </p>
                             <form action="{{ route('cart.delete', $item->id) }}" method="POST">
                                 @csrf
                                 @method('DELETE')
-                                <button type="submit" class="px-4 py-2 text-white bg-red-500 rounded">Delete</button>
+                                <button type="submit"
+                                    class="px-4 py-2 mt-2 text-white bg-red-500 rounded sm:mt-0">Delete</button>
                             </form>
                         </div>
                     </div>
                 @endforeach
             </div>
 
-            <div class="mt-6">
+            <div class="flex justify-start mt-6">
                 <form action="{{ route('bookings.store') }}" method="POST">
                     @csrf
-                    <button type="submit" class="px-6 py-2 text-white rounded bg-primary">
+                    <button type="submit" class="px-6 py-2 text-white rounded bg-primary hover:bg-primary-dark">
                         Create Booking
                     </button>
                 </form>

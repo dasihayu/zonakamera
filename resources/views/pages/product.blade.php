@@ -4,12 +4,12 @@
 
 @section('content')
     <!-- Hero Section -->
-    <div class="relative {{ request()->is('/') ? 'hidden' : '' }}">
+    <div class="relative">
         <!-- Background Image -->
         <img src="{{ asset('storage/' . $page->product_banner) }}" alt="Hero Image"
-            class="object-cover w-full max-h-80 blur-sm" />
+            class="object-cover w-full max-h-80 md:max-h-96 blur-sm" />
         <!-- Headline -->
-        <div class="absolute inset-0 flex flex-col items-center justify-center mt-16 text-center">
+        <div class="absolute inset-0 flex flex-col items-center justify-center text-center">
             <h1 class="text-6xl font-extrabold text-white md:text-8xl drop-shadow-lg">
                 @yield('title')
             </h1>
@@ -17,7 +17,7 @@
     </div>
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <div class="flex flex-col items-center justify-center w-full p-6 my-12">
+    <div class="flex flex-col items-center justify-center w-full px-6 py-12 my-12">
         <div class="flex flex-col w-full max-w-screen-lg md:flex-row">
             <!-- Sidebar Filter -->
             <div class="w-full p-4 bg-gray-100 rounded-lg md:w-1/4">
@@ -29,7 +29,7 @@
                     </div>
 
                     <!-- Category Filter -->
-                    <div class="mb-4">
+                    <div class="hidden mb-4 md:block">
                         <p class="mb-2 font-bold">Categories</p>
                         <div class="flex flex-wrap gap-2">
                             <a href="{{ route('products', ['category' => '']) }}"
@@ -46,7 +46,7 @@
                     </div>
 
                     <!-- Price Range -->
-                    <div class="mb-4">
+                    <div class="hidden mb-4 md:block">
                         <p class="mb-2 font-bold">Price Range</p>
                         <div class="relative">
                             <!-- Price Range Slider -->
@@ -68,7 +68,7 @@
                                 id="priceLabel">{{ request('price_range', 2000000) }}</span></p>
                     </div>
 
-                    <div class="mt-4">
+                    <div class="hidden mt-4 md:block">
                         <button type="submit" class="px-4 py-2 text-white rounded-lg bg-primary">
                             Apply Price
                         </button>
@@ -82,7 +82,7 @@
             <!-- Products Section -->
             <div class="w-full md:w-3/4 md:ml-6">
                 @if ($products->count() > 0)
-                    <div class="grid grid-cols-1 gap-6 md:grid-cols-3">
+                    <div class="grid grid-cols-2 gap-6 md:grid-cols-3">
                         @foreach ($products as $product)
                             <div class="flex flex-col bg-[#f7f7f7] rounded-b-lg">
                                 <img src="{{ asset('storage/' . $product->image_url) }}" class="object-cover w-full"
@@ -108,8 +108,8 @@
                                         <span class="text-sm text-gray-500">(5.0)</span>
                                     </div>
                                 </div>
-                                <div class="flex items-center justify-between p-4">
-                                    <p class="text-xl font-bold">Rp{{ number_format($product->price, 0, ',', '.') }}</p>
+                                <div class="flex items-center justify-between px-4 pb-4">
+                                    <p class="font-bold text-md md:text-xl">Rp{{ number_format($product->price, 0, ',', '.') }}</p>
                                     @if (Auth::check())
                                         <button onclick="addToCart({{ $product->id }})"
                                             class="flex items-center justify-center w-8 h-8 text-white rounded-full bg-primary hover:bg-primary-dark">
@@ -128,32 +128,32 @@
 
                     <!-- Pagination -->
                     <div class="mt-8">
-                        <div class="flex items-center justify-center gap-4">
+                        <div class="flex flex-wrap items-center justify-center gap-2 md:gap-4">
                             {{-- Previous Page Link --}}
                             @if ($products->onFirstPage())
-                                <span class="px-4 py-2 text-gray-400 cursor-not-allowed">Previous</span>
+                                <span class="px-2 py-1 text-gray-400 cursor-not-allowed md:px-4 md:py-2">Previous</span>
                             @else
                                 <a href="{{ $products->previousPageUrl() }}"
-                                    class="px-4 py-2 rounded text-primary hover:text-white hover:bg-primary-light">Previous</a>
+                                    class="px-2 py-1 rounded text-primary hover:text-white hover:bg-primary-light md:px-4 md:py-2">Previous</a>
                             @endif
 
                             {{-- Page Numbers --}}
                             @foreach ($products->getUrlRange(1, $products->lastPage()) as $pageNumber => $url)
                                 @if ($pageNumber == $products->currentPage())
                                     <span
-                                        class="px-4 py-2 text-white rounded bg-primary hover:text-white">{{ $pageNumber }}</span>
+                                        class="px-2 py-1 text-white rounded bg-primary hover:text-white md:px-4 md:py-2">{{ $pageNumber }}</span>
                                 @else
                                     <a href="{{ $url }}"
-                                        class="px-4 py-2 rounded text-primary hover:text-white hover:bg-primary-light">{{ $pageNumber }}</a>
+                                        class="px-2 py-1 rounded text-primary hover:text-white hover:bg-primary-light md:px-4 md:py-2">{{ $pageNumber }}</a>
                                 @endif
                             @endforeach
 
                             {{-- Next Page Link --}}
                             @if ($products->hasMorePages())
                                 <a href="{{ $products->nextPageUrl() }}"
-                                    class="px-4 py-2 rounded text-primary hover:text-white hover:bg-primary-light">Next</a>
+                                    class="px-2 py-1 rounded text-primary hover:text-white hover:bg-primary-light md:px-4 md:py-2">Next</a>
                             @else
-                                <span class="px-4 py-2 text-gray-400 cursor-not-allowed">Next</span>
+                                <span class="px-2 py-1 text-gray-400 cursor-not-allowed md:px-4 md:py-2">Next</span>
                             @endif
                         </div>
                     </div>
@@ -162,8 +162,6 @@
                         <p class="text-lg font-bold text-gray-600">No products found. Please adjust your filters.</p>
                     </div>
                 @endif
-
-
             </div>
         </div>
     </div>
@@ -192,7 +190,6 @@
         });
 
         function addToCart(productId) {
-
             const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content;
 
             if (!csrfToken) {
@@ -250,13 +247,17 @@
                         .catch(error => {
                             Swal.showValidationMessage(`Request failed: ${error}`);
                         });
-                }
+                },
             }).then((result) => {
                 if (result.isConfirmed) {
-                    Swal.fire('Added to cart!', '', 'success');
+                    Swal.fire({
+                        title: 'Success!',
+                        text: 'Product added to cart.',
+                        icon: 'success',
+                        confirmButtonText: 'OK'
+                    });
                 }
             });
         }
     </script>
-
 @endsection
