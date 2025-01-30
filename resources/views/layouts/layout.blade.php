@@ -25,7 +25,7 @@
 
 <body class="flex flex-col min-h-screen font-manrope">
     <!-- Navbar -->
-    <nav class="fixed top-0 left-0 z-50 w-full bg-white">
+    <nav class="fixed top-0 left-0 z-50 w-full bg-white shadow-md">
         <div class="container px-4 mx-auto md:px-12">
             <div class="relative flex items-center justify-between py-5">
                 <!-- Logo -->
@@ -42,7 +42,7 @@
 
                 <!-- Navigation Menu -->
                 <div id="nav-menu"
-                    class="fixed inset-0 z-10 hidden w-full h-screen bg-white md:h-auto md:relative md:w-auto">
+                    class="fixed inset-0 z-10 hidden w-full h-screen bg-white md:h-auto md:relative md:block md:w-auto">
                     <!-- Mobile menu container -->
                     <div
                         class="flex flex-col items-center w-full h-full px-4 pt-24 pb-8 overflow-y-auto md:flex-row md:items-center md:space-x-6 md:pt-0 md:pb-0">
@@ -50,25 +50,25 @@
                         <div
                             class="flex flex-col items-center w-full space-y-6 md:flex-row md:space-y-0 md:space-x-6 md:w-auto">
                             <a href="{{ route('home') }}"
-                                class="w-full py-2 text-lg font-semibold text-center text-gray-800 hover:text-gray-600 md:w-auto {{ Route::is('home') ? 'border-b-2 border-primary' : '' }}">
+                                class="w-full text-lg font-semibold text-center text-gray-800 hover:text-gray-600 md:w-auto {{ Route::is('home') ? 'border-b-2 border-primary' : '' }}">
                                 Home
                             </a>
                             <a href="{{ route('about') }}"
-                                class="w-full py-2 text-lg font-semibold text-center text-gray-800 hover:text-gray-600 md:w-auto {{ Route::is('about') ? 'border-b-2 border-primary' : '' }}">
+                                class="w-full text-lg font-semibold text-center text-gray-800 hover:text-gray-600 md:w-auto {{ Route::is('about') ? 'border-b-2 border-primary' : '' }}">
                                 About
                             </a>
                             <a href="{{ route('products') }}"
-                                class="w-full py-2 text-lg font-semibold text-center text-gray-800 hover:text-gray-600 md:w-auto {{ Route::is('products') ? 'border-b-2 border-primary' : '' }}">
+                                class="w-full text-lg font-semibold text-center text-gray-800 hover:text-gray-600 md:w-auto {{ Route::is('products') ? 'border-b-2 border-primary' : '' }}">
                                 Product
                             </a>
 
                             @auth
                                 <a href="{{ route('bookings.index') }}"
-                                    class="w-full py-2 text-lg font-semibold text-center text-gray-800 hover:text-gray-600 md:w-auto {{ request()->is('bookings*') ? 'border-b-2 border-primary' : '' }}">
+                                    class="w-full text-lg font-semibold text-center text-gray-800 hover:text-gray-600 md:w-auto {{ request()->is('bookings*') ? 'border-b-2 border-primary' : '' }}">
                                     My Bookings
                                 </a>
                                 <a href="{{ route('cart.index') }}"
-                                    class="flex items-center justify-center w-full p-2 md:w-auto {{ Route::is('cart.index') ? 'bg-primary text-white' : 'text-gray-800' }}">
+                                    class="flex items-center justify-center w-full p-2 rounded-lg md:w-auto {{ Route::is('cart.index') ? 'bg-primary text-white' : 'text-gray-800' }}">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                         stroke-width="1.5" stroke="currentColor" class="size-6">
                                         <path stroke-linecap="round" stroke-linejoin="round"
