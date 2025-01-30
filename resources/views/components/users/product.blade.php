@@ -1,5 +1,5 @@
 <!-- Products Section -->
-<div class="flex flex-col items-center justify-center text-center my-8 md:my-12 mx-auto bg-[#F7F7F7] p-4 md:p-6">
+<div class="flex flex-col items-center justify-center p-4 mx-auto my-8 text-center bg-white md:my-12 md:p-6">
     <h1 class="text-3xl font-bold md:text-5xl">Best Selling Product</h1>
     <!--- Product Carousel --->
     <div class="grid w-full grid-cols-1 gap-4 mt-8 sm:grid-cols-2 lg:grid-cols-4 md:gap-6 md:mt-12 max-w-7xl">
@@ -30,10 +30,9 @@
                 </div>
                 <div class="flex items-center justify-between p-4">
                     <p class="text-lg font-bold md:text-xl">Rp{{ number_format($product->price, 0, ',', '.') }}</p>
-                    <button
-                        class="flex items-center justify-center w-8 h-8 text-white rounded-full bg-primary hover:bg-primary-dark">
+                    <a href="{{ route('products') }}" class="flex items-center justify-center w-8 h-8 text-white rounded-full bg-primary hover:bg-primary-dark">
                         +
-                    </button>
+                    </a>
                 </div>
             </div>
         @endforeach
