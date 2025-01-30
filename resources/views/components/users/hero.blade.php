@@ -1,7 +1,7 @@
 <!-- Hero Section -->
 <div class="relative">
     <!-- Background Image -->
-    <img src="{{ asset('storage/' . $page->home_banner_img) }}" alt="Hero Image" class="w-full h-[50vh] md:h-screen object-cover blur-sm" />
+    <img src="{{ asset('storage/' . $page->home_banner_img) }}" alt="Hero Image" class="object-cover w-full h-screen blur-sm" />
 
     <!-- Headline -->
     <div class="absolute inset-0 flex flex-col items-center justify-center px-4 text-center">
