@@ -1,5 +1,5 @@
 <!-- About Section -->
-<div class="flex flex-col items-center justify-center gap-8 px-4 my-12 md:flex-row md:my-24 md:px-6">
+<div class="flex flex-col items-center gap-8 px-4 my-12 justify-evenly md:flex-row md:my-24 md:px-6">
     <img src="{{ asset('storage/' . $page->home_about_img) }}"
         class="w-full md:w-1/2 max-w-[600px] rounded-xl object-cover" alt="About Image">
     <div class="flex flex-col w-full md:w-[500px] gap-2">
