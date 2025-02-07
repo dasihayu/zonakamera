@@ -92,6 +92,10 @@
                 </div>
             </div>
         </div>
+        <!-- Running Text (Only visible on mobile) -->
+        <div id="mobile-alert" class="block py-2 text-sm text-center text-white bg-primary lg:hidden ">
+            Use desktop mode for a better experience.
+        </div>
     </nav>
 
     <!-- Main Content with proper spacing for fixed navbar -->
