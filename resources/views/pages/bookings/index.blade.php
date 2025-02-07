@@ -99,6 +99,7 @@
                                                         'confirmed' => 'bg-blue-500',
                                                         'canceled' => 'bg-red-500',
                                                         'not returned' => 'bg-red-500',
+                                                        'picked up' => 'bg-blue-500',
                                                     ];
                                                 @endphp
 

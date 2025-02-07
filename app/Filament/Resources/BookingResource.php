@@ -148,6 +148,7 @@ class BookingResource extends Resource
                         'completed' => 'success',
                         'canceled' => 'danger',
                         'not returned' => 'danger',
+                        'picked up' => 'info',
                         default => 'secondary',
                     })
                     ->formatStateUsing(fn(string $state): string => ucfirst($state)),
@@ -161,6 +162,7 @@ class BookingResource extends Resource
                         'completed' => 'Completed',
                         'canceled' => 'Canceled',
                         'not returned' => 'Not Returned',
+                        'picked up' => 'Picked Up',
                     ]),
                 Tables\Filters\Filter::make('booking_date_range')
                     ->form([
@@ -181,15 +183,34 @@ class BookingResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
-                Tables\Actions\Action::make('isReturned')
+                Tables\Actions\Action::make('updateStatus')
+                    ->label('Update Status')
                     ->icon('heroicon-o-check-circle')
                     ->color('success')
                     ->requiresConfirmation()
-                    ->action(function (Booking $record) {
-                        $record->is_returned = 1;
-                        $record->save();
+                    ->modalHeading('Update Booking Status')
+                    ->modalDescription('Are you sure you want to update the status of this booking?')
+                    ->form([
+                        Forms\Components\Select::make('status')
+                            ->label('Status')
+                            ->options([
+                                'pending' => 'Pending',
+                                'confirmed' => 'Confirmed',
+                                'completed' => 'Completed',
+                                'canceled' => 'Canceled',
+                                'not returned' => 'Not Returned',
+                                'picked up' => 'Picked Up',
+                            ])
+                            ->required()
+                            ->default(function ($record) {
+                                return $record->status;
+                            })
+                    ])
+                    ->action(function ($record, array $data): void {
+                        $record->update([
+                            'status' => $data['status']
+                        ]);
                     })
-                    ->visible(fn(Booking $record) => $record->is_returned == 0),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

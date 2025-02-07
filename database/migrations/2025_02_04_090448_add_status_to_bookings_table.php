@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('bookings', function (Blueprint $table) {
-            $table->enum('status', ['pending', 'confirmed', 'canceled', 'completed', 'not returned'])
+            $table->enum('status', ['pending', 'confirmed', 'canceled', 'completed', 'not returned', 'picked up'])
                 ->default('pending')
                 ->after('end_date');
             $table->dropColumn('is_returned');
