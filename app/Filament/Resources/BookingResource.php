@@ -23,11 +23,11 @@ class BookingResource extends Resource
 
     protected static function calculatePrice(callable $set, callable $get): void
     {
-        $productIds = $get('product_id');
+        $products = $get('products') ?? [];
         $startDate = $get('start_date');
         $endDate = $get('end_date');
 
-        if (!$productIds || !$startDate || !$endDate) {
+        if (empty($products) || !$startDate || !$endDate) {
             $set('price', 0);
             return;
         }
@@ -37,11 +37,15 @@ class BookingResource extends Resource
             $endDate = Carbon::parse($endDate)->startOfDay();
             $numberOfDays = max(1, $startDate->diffInDays($endDate));
 
-            $totalProductPrice = Product::whereIn('id', $productIds)
-                ->get()
-                ->sum('price');
+            $totalPrice = 0;
+            foreach ($products as $product) {
+                if (isset($product['product_id'], $product['quantity'])) {
+                    $productPrice = Product::find($product['product_id'])->price ?? 0;
+                    $totalPrice += $productPrice * $product['quantity'];
+                }
+            }
 
-            $set('price', $totalProductPrice * $numberOfDays);
+            $set('price', $totalPrice * $numberOfDays);
         } catch (\Exception $e) {
             $set('price', 0);
         }
@@ -55,17 +59,40 @@ class BookingResource extends Resource
                     ->relationship('user', 'username')
                     ->searchable()
                     ->preload()
+                    ->columnspanfull()
                     ->required(),
 
-                Forms\Components\Select::make('product_id')
-                    ->relationship('products', 'title')
-                    ->searchable()
-                    ->preload()
-                    ->multiple()
+                Forms\Components\Repeater::make('products')
+                    ->schema([
+                        Forms\Components\Select::make('product_id')
+                            ->label('Product')
+                            ->options(function () {
+                                return Product::query()
+                                    ->get()
+                                    ->mapWithKeys(function ($product) {
+                                        return [
+                                            $product->id => "{$product->title} (Rp " . number_format($product->price, 0, ',', '.') . ")"
+                                        ];
+                                    })
+                                    ->toArray();
+                            })
+                            ->searchable()
+                            ->required()
+                            ->live()
+                            ->afterStateUpdated(fn($set, $get) => static::calculatePrice($set, $get)),
+
+                        Forms\Components\TextInput::make('quantity')
+                            ->numeric()
+                            ->default(1)
+                            ->required()
+                            ->live()
+                            ->afterStateUpdated(fn($set, $get) => static::calculatePrice($set, $get)),
+                    ])
+                    ->columnspanfull()
+                    ->columns(2)
+                    ->addActionLabel('Add Product')
                     ->required()
-                    ->live()
-                    ->getOptionLabelFromRecordUsing(fn($record) => "{$record->title} (Rp " . number_format($record->price, 0, ',', '.') . ")")
-                    ->afterStateUpdated(fn($set, $get) => static::calculatePrice($set, $get)),
+                    ->live(),
 
                 Forms\Components\DateTimePicker::make('start_date')
                     ->required()
