@@ -113,21 +113,27 @@ class BookingResource extends Resource
                     ->label('Total Price')
                     ->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.')),
 
-                Tables\Columns\IconColumn::make('is_returned')
-                    ->boolean()
-                    ->trueIcon('heroicon-o-check-circle')
-                    ->falseIcon('heroicon-o-x-circle')
-                    ->colors([
-                        'success' => 1,
-                        'danger' => 0,
-                    ])
+                Tables\Columns\TextColumn::make('status')
+                    ->badge()
+                    ->color(fn(string $state): string => match ($state) {
+                        'pending' => 'warning',
+                        'confirmed' => 'info',
+                        'completed' => 'success',
+                        'canceled' => 'danger',
+                        'not returned' => 'danger',
+                        default => 'secondary',
+                    })
+                    ->formatStateUsing(fn(string $state): string => ucfirst($state)),
             ])
             ->filters([
-                Tables\Filters\SelectFilter::make('is_returned')
-                    ->label('Return Status')
+                Tables\Filters\SelectFilter::make('status')
+                    ->label('Status')
                     ->options([
-                        1 => 'Returned',
-                        2 => 'Not Yet Returned',
+                        'pending' => 'Pending',
+                        'confirmed' => 'Confirmed',
+                        'completed' => 'Completed',
+                        'canceled' => 'Canceled',
+                        'not returned' => 'Not Returned',
                     ]),
                 Tables\Filters\Filter::make('booking_date_range')
                     ->form([

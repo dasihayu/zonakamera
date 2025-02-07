@@ -92,11 +92,21 @@
                                             class="relative block hover:bg-gray-50">
                                             <div class="px-4 py-4 sm:px-6">
                                                 {{-- Badge di pojok kanan atas --}}
+                                                @php
+                                                    $statusColors = [
+                                                        'completed' => 'bg-green-500',
+                                                        'pending' => 'bg-yellow-500',
+                                                        'confirmed' => 'bg-blue-500',
+                                                        'canceled' => 'bg-red-500',
+                                                        'not returned' => 'bg-red-500',
+                                                    ];
+                                                @endphp
+
                                                 <div
-                                                    class="absolute top-2 right-2 px-3 py-1 text-xs font-semibold text-white rounded-full 
-                    {{ $booking->is_returned ? 'bg-green-500' : 'bg-red-500' }}">
-                                                    {{ $booking->is_returned ? 'Returned' : 'Not Returned' }}
+                                                    class="absolute top-2 right-2 px-3 py-1 text-xs font-semibold text-white rounded-full {{ $statusColors[$booking->status] ?? 'bg-gray-500' }}">
+                                                    {{ ucfirst($booking->status) }}
                                                 </div>
+
 
                                                 <div class="flex items-center justify-between">
                                                     <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-4">

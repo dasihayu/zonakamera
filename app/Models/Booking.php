@@ -14,7 +14,8 @@ class Booking extends Model
         'user_id',
         'price',
         'start_date',
-        'end_date'
+        'end_date',
+        'status'
     ];
 
     protected $casts = [
@@ -22,6 +23,11 @@ class Booking extends Model
         'end_date' => 'datetime',
     ];
 
+    public function setProductDetailsAttribute($value)
+    {
+        $this->productDetails = $value;
+    }
+    
     public function products()
     {
         return $this->belongsToMany(Product::class, 'booking_product')

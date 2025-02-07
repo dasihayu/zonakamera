@@ -60,16 +60,15 @@ class BookingController extends Controller
                 'user_id' => auth()->id(),
                 'price' => $totalPrice,
                 'start_date' => $startDate,
-                'end_date' => $endDate
+                'end_date' => $endDate,
+                'status' => 'pending'
             ]);
 
             // Attach products to booking
-            foreach ($cartItems as $item) {
-                $itemPrice = $item->product->price * $item->quantity * $totalDays;
-
-                $booking->products()->attach($item->product_id, [
-                    'quantity' => $item->quantity,
-                    'price' => $itemPrice
+            foreach ($request->input('product_details', []) as $productDetail) {
+                $booking->products()->attach($productDetail['product_id'], [
+                    'quantity' => $productDetail['quantity'],
+                    'total_price' => $productDetail['total_price']
                 ]);
             }
 
