@@ -3,7 +3,6 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\BookingResource\Pages;
-use App\Filament\Resources\BookingResource\RelationManagers;
 use App\Models\Booking;
 use App\Models\Product;
 use Carbon\Carbon;
@@ -13,7 +12,7 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Facades\Http;
 
 class BookingResource extends Resource
 {
@@ -210,7 +209,16 @@ class BookingResource extends Resource
                         $record->update([
                             'status' => $data['status']
                         ]);
-                    })
+                    }),
+                Tables\Actions\Action::make('sendReminder')
+                    ->label('Send Reminder')
+                    ->icon('heroicon-o-bell')
+                    ->color('warning')
+                    ->requiresConfirmation()
+                    ->modalHeading('Send Return Reminder')
+                    ->modalDescription('Are you sure you want to send a reminder to the customer?')
+                    ->action(fn($record) => static::sendReminder($record))
+                    ->hidden(fn($record) => $record->status !== 'not returned' || Carbon::parse($record->end_date)->isAfter(today())),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -233,5 +241,44 @@ class BookingResource extends Resource
             'create' => Pages\CreateBooking::route('/create'),
             'edit' => Pages\EditBooking::route('/{record}/edit'),
         ];
+    }
+
+    protected static function sendReminder($record): void
+    {
+        $message = "Halo, {$record->user->firstname}!\n\n" .
+            "Kami ingin mengingatkan bahwa barang yang Anda sewa belum dikembalikan. " .
+            "Masa sewa seharusnya berakhir pada " . Carbon::parse($record->end_date)->format('d F Y') . ".\n\n" .
+            "Silakan segera mengembalikan barang tersebut. Terima kasih!";
+
+        static::sendWhatsAppMessage($record->user->phone, $message);
+    }
+
+    protected static function sendWhatsAppMessage(string $phone, string $message): void
+    {
+        $apiUrl = 'https://api.fonnte.com/send';
+        $apiKey = env('FONNTE_API_KEY');
+
+        try {
+            $response = Http::withHeaders([
+                'Authorization' => $apiKey,
+            ])
+            ->timeout(60)
+            ->retry(3, 100)
+            ->post($apiUrl, [
+                'target' => $phone,
+                'message' => $message,
+            ]);
+
+            if ($response->failed()) {
+                \Log::error('Fonnte API Error: ' . $response->body());
+                throw new \Exception('Failed to send WhatsApp message: ' . $response->body());
+            }
+
+            \Log::info('WhatsApp message sent successfully to: ' . $phone);
+            
+        } catch (\Exception $e) {
+            \Log::error('WhatsApp Notification Error: ' . $e->getMessage());
+            throw new \Exception('Failed to send WhatsApp message: ' . $e->getMessage());
+        }
     }
 }
