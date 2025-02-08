@@ -7,7 +7,7 @@
         <div class="swiper-wrapper">
             @foreach ($videos as $video)
                 <div class="relative swiper-slide group">
-                    <a href="instagram.com/zonakamerasemarang">
+                    <a href="https://www.instagram.com/zonakamerasemarang/" target="blank">
                         <video class="object-cover w-full h-64 rounded-lg md:h-96 lg:h-128" muted>
                             <source src="{{ Storage::url($video->url) }}" type="video/mp4">
                         </video>
