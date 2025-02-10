@@ -150,6 +150,15 @@ class BookingResource extends Resource
 
                 Tables\Columns\TextColumn::make('status')
                     ->badge()
+                    ->icon(fn(string $state): ?string => match ($state) {
+                        'pending' => 'heroicon-o-clock',
+                        'confirmed' => 'heroicon-o-check-circle',
+                        'completed' => 'heroicon-o-check',
+                        'canceled' => 'heroicon-o-x-circle',
+                        'not returned' => 'heroicon-o-exclamation-circle',
+                        'picked up' => 'heroicon-o-truck',
+                        default => null,
+                    })
                     ->color(fn(string $state): string => match ($state) {
                         'pending' => 'warning',
                         'confirmed' => 'success',
@@ -190,45 +199,40 @@ class BookingResource extends Resource
                     }),
             ])
             ->actions([
-                // TODO: When end date is today, change status to 'not returned' automatically
                 Tables\Actions\EditAction::make(),
-                Tables\Actions\Action::make('updateStatus')
-                    ->label('Update Status')
-                    ->icon('heroicon-o-check-circle')
-                    ->color('success')
-                    ->requiresConfirmation()
-                    ->modalHeading('Update Booking Status')
-                    ->modalDescription('Are you sure you want to update the status of this booking?')
-                    ->form([
-                        Forms\Components\Select::make('status')
-                            ->label('Status')
-                            ->options([
-                                'pending' => 'Pending',
-                                'confirmed' => 'Confirmed',
-                                'completed' => 'Completed',
-                                'canceled' => 'Canceled',
-                                'not returned' => 'Not Returned',
-                                'picked up' => 'Picked Up',
-                            ])
-                            ->required()
-                            ->default(function ($record) {
-                                return $record->status;
-                            })
-                    ])
-                    ->action(function ($record, array $data): void {
-                        $record->update([
-                            'status' => $data['status']
-                        ]);
-                    }),
-                Tables\Actions\Action::make('sendReminder')
-                    ->label('Send Reminder')
-                    ->icon('heroicon-o-bell')
-                    ->color('warning')
-                    ->requiresConfirmation()
-                    ->modalHeading('Send Return Reminder')
-                    ->modalDescription('Are you sure you want to send a reminder to the customer?')
-                    ->action(fn($record) => static::sendReminder($record))
-                    ->hidden(fn($record) => $record->status !== 'not returned' || Carbon::parse($record->end_date)->isAfter(today())),
+                Tables\Actions\ActionGroup::make([
+                    Tables\Actions\Action::make('updateStatus')
+                        ->label('Update Status')
+                        ->icon('heroicon-o-check-circle')
+                        ->color('success')
+                        ->requiresConfirmation()
+                        ->modalHeading('Update Booking Status')
+                        ->modalDescription('Are you sure you want to update the status of this booking?')
+                        ->form([
+                            Forms\Components\Select::make('status')
+                                ->label('Status')
+                                ->options([
+                                    'pending' => 'Pending',
+                                    'confirmed' => 'Confirmed',
+                                    'completed' => 'Completed',
+                                    'canceled' => 'Canceled',
+                                    'picked up' => 'Picked Up',
+                                ])
+                                ->required()
+                                ->default(fn($record) => $record->status),
+                        ])
+                        ->action(fn($record, array $data) => $record->update(['status' => $data['status']])),
+
+                    Tables\Actions\Action::make('sendReminder')
+                        ->label('Send Reminder')
+                        ->icon('heroicon-o-bell')
+                        ->color('warning')
+                        ->requiresConfirmation()
+                        ->modalHeading('Send Return Reminder')
+                        ->modalDescription('Are you sure you want to send a reminder to the customer?')
+                        ->action(fn($record) => static::sendReminder($record))
+                        ->hidden(fn($record) => $record->status !== 'not returned' || Carbon::parse($record->end_date)->isAfter(today())),
+                ])
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
