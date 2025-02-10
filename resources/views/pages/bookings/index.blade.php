@@ -122,7 +122,7 @@
                                                 <div class="flex items-center justify-between">
                                                     <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-4">
                                                         <p class="text-sm font-medium truncate text-primary">
-                                                            Booking #{{ $booking->id }}
+                                                            #{{ $booking->booking_id }}
                                                         </p>
                                                         <div class="flex items-center gap-2 text-sm text-gray-500">
                                                             <span>{{ $booking->start_date->format('d M Y') }}</span>

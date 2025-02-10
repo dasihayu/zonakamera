@@ -22,7 +22,7 @@
                 <div class="p-6">
                     <div class="flex items-start justify-between">
                         <div>
-                            <h1 class="text-2xl font-bold text-gray-900">Booking #{{ $booking->id }}</h1>
+                            <h1 class="text-2xl font-bold text-gray-900">Booking #{{ $booking->booking_id }}</h1>
                             <p class="mt-1 text-sm text-gray-500">
                                 Created on {{ $booking->created_at->format('d M Y, H:i') }}
                             </p>
