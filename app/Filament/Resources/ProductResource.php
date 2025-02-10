@@ -67,11 +67,6 @@ class ProductResource extends Resource
                                             ->prefix('IDR')
                                             ->numeric()
                                             ->columnSpan(2),
-                                        Forms\Components\MarkdownEditor::make('description')
-                                            ->label('Description')
-                                            ->helperText('Provide a description for the product')
-                                            ->maxLength(500)
-                                            ->columnSpanFull(),
                                     ])
                                     ->compact()
                                     ->columns(2),
@@ -99,6 +94,10 @@ class ProductResource extends Resource
     {
         return $table
             ->columns([
+                Tables\Columns\TextColumn::make('product_id')
+                    ->badge()
+                    ->sortable()
+                    ->searchable(),
                 Tables\Columns\ImageColumn::make('image_url')
                     ->label('Image')
                     ->width(100)

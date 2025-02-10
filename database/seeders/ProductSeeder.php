@@ -9,6 +9,31 @@ use Illuminate\Support\Facades\File;
 
 class ProductSeeder extends Seeder
 {
+    private function extractSeriesNumber($title)
+    {
+        // Same logic as in Product model
+        $title = strtoupper(preg_replace('/\s+/', '', $title));
+        preg_match('/[A-Z]?(\d+[A-Z]?\d*)/i', $title, $matches);
+
+        if (!empty($matches[0])) {
+            return substr($matches[0], 0, 5);
+        }
+
+        return substr($title, 0, 5);
+    }
+
+    private function generateUniqueId($categoryName, $title)
+    {
+        $categoryPart = strtoupper(preg_replace('/\s+/', '', $categoryName));
+        $categoryPart = substr($categoryPart, 0, 3);
+
+        $titlePart = $this->extractSeriesNumber($title);
+
+        $randomPart = str_pad(rand(0, 999), 3, '0', STR_PAD_LEFT);
+
+        return "{$categoryPart}-{$titlePart}-{$randomPart}";
+    }
+
     public function run()
     {
         // Categories
@@ -759,6 +784,14 @@ class ProductSeeder extends Seeder
             $exists = DB::table('products')->where('title', $product['title'])->exists();
 
             if (!$exists) {
+                $primaryCategoryId = $product['categories'][0];
+                $categoryName = DB::table('product_categories')
+                    ->where('id', $primaryCategoryId)
+                    ->value('name');
+
+                $productId = $this->generateUniqueId($categoryName, $product['title']);
+
+
                 // Move image to storage
                 $oldPath = public_path('images/products/' . $product['image_url']);
                 $newPath = 'product_image/' . $product['image_url'];
@@ -767,9 +800,10 @@ class ProductSeeder extends Seeder
                     Storage::disk('public')->put($newPath, File::get($oldPath));
                 }
 
-                // Insert product
+                // Insert product with unique ID
                 DB::table('products')->insert([
                     'id' => $index + 1,
+                    'product_id' => $productId, // Add this column to your products table
                     'title' => $product['title'],
                     'price' => $product['price'],
                     'image_url' => $newPath,
