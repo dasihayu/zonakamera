@@ -11,6 +11,7 @@ class Booking extends Model
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
+        'booking_id',  // Tambahkan ke fillable
         'user_id',
         'price',
         'start_date',
@@ -22,6 +23,29 @@ class Booking extends Model
         'start_date' => 'datetime',
         'end_date' => 'datetime',
     ];
+
+    protected static function booted()
+    {
+        static::creating(function ($booking) {
+            if (!$booking->booking_id) {
+                $booking->booking_id = $booking->generateUniqueId();
+            }
+        });
+    }
+
+    public function generateUniqueId()
+    {
+        $datePart = now()->format('Ymd'); // Format tanggal: YYYYMMDD
+        $randomPart = str_pad(rand(0, 99999), 5, '0', STR_PAD_LEFT); // Random 5 digit
+        $newId = "BKG-{$datePart}-{$randomPart}";
+
+        while (static::where('booking_id', $newId)->exists()) {
+            $randomPart = str_pad(rand(0, 99999), 5, '0', STR_PAD_LEFT);
+            $newId = "BKG-{$datePart}-{$randomPart}";
+        }
+
+        return $newId;
+    }
 
     public function setProductDetailsAttribute($value)
     {
