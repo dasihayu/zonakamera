@@ -16,7 +16,7 @@ class UpdateBookingStatus extends Command
         $today = Carbon::today();
 
         $updated = Booking::whereDate('end_date', '<=', $today)
-            ->where('status', '!=', 'not returned')
+            ->whereNotIn('status', ['not returned', 'completed'])
             ->update(['status' => 'not returned']);
 
         $this->info("$updated bookings updated to 'not returned'.");

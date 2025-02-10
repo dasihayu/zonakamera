@@ -106,6 +106,7 @@ class BookingResource extends Resource
                 Forms\Components\TextInput::make('price')
                     ->label('Total Price')
                     ->prefix('Rp')
+                    ->columnspanfull()
                     ->readOnly()
                     ->formatStateUsing(fn($state) => number_format((float) $state, 0, ',', '.'))
                     ->dehydrateStateUsing(fn($state) => str_replace(',', '', str_replace('.', '', $state)))
