@@ -27,10 +27,29 @@
                                 Created on {{ $booking->created_at->format('d M Y, H:i') }}
                             </p>
                         </div>
+                        @php
+                            $statusColors = [
+                                'completed' => 'bg-green-500',
+                                'pending' => 'bg-yellow-500',
+                                'confirmed' => 'bg-green-500',
+                                'canceled' => 'bg-red-500',
+                                'not returned' => 'bg-red-500',
+                                'picked up' => 'bg-blue-500',
+                            ];
+                            $statusIcons = [
+                                'completed' => 'fas fa-check-circle',
+                                'pending' => 'fas fa-hourglass-half',
+                                'confirmed' => 'fas fa-check',
+                                'canceled' => 'fas fa-times-circle',
+                                'not returned' => 'fas fa-exclamation-circle',
+                                'picked up' => 'fas fa-truck',
+                            ];
+                        @endphp
                         <div class="text-right">
                             <span
-                                class="inline-flex px-3 py-1 text-sm font-semibold leading-5 text-green-800 bg-green-100 rounded-full">
-                                Active
+                                class="inline-flex px-3 py-1 text-sm font-semibold leading-5 text-white rounded-full {{ $statusColors[$booking->status] ?? 'bg-gray-500' }}">
+                                <i class="{{ $statusIcons[$booking->status] ?? 'fas fa-info-circle' }} mr-1"></i>
+                                {{ ucfirst($booking->status) }}
                             </span>
                         </div>
                     </div>
