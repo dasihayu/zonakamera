@@ -123,9 +123,18 @@ class BookingResource extends Resource
                 Tables\Columns\TextColumn::make('user.phone')
                     ->label('Phone'),
 
-                Tables\Columns\TextColumn::make('products.title')
+                Tables\Columns\TextColumn::make('products')
                     ->label('Products')
-                    ->listWithLineBreaks(),
+                    ->badge()
+                    ->getStateUsing(function ($record) {
+                        return $record->products->map(function ($product) {
+                            $price = number_format($product->pivot->price, 0, ',', '.');
+                            return "{$product->title} (Qty: {$product->pivot->quantity}) - Rp {$price}";
+                        })->toArray();
+                    })
+                    ->colors([
+                        'primary',
+                    ]),
 
                 Tables\Columns\TextColumn::make('start_date')
                     ->label('Start Date')
@@ -143,7 +152,7 @@ class BookingResource extends Resource
                     ->badge()
                     ->color(fn(string $state): string => match ($state) {
                         'pending' => 'warning',
-                        'confirmed' => 'info',
+                        'confirmed' => 'success',
                         'completed' => 'success',
                         'canceled' => 'danger',
                         'not returned' => 'danger',
@@ -181,6 +190,7 @@ class BookingResource extends Resource
                     }),
             ])
             ->actions([
+                // TODO: When end date is today, change status to 'not returned' automatically
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\Action::make('updateStatus')
                     ->label('Update Status')
@@ -262,12 +272,12 @@ class BookingResource extends Resource
             $response = Http::withHeaders([
                 'Authorization' => $apiKey,
             ])
-            ->timeout(60)
-            ->retry(3, 100)
-            ->post($apiUrl, [
-                'target' => $phone,
-                'message' => $message,
-            ]);
+                ->timeout(60)
+                ->retry(3, 100)
+                ->post($apiUrl, [
+                    'target' => $phone,
+                    'message' => $message,
+                ]);
 
             if ($response->failed()) {
                 \Log::error('Fonnte API Error: ' . $response->body());
@@ -275,7 +285,6 @@ class BookingResource extends Resource
             }
 
             \Log::info('WhatsApp message sent successfully to: ' . $phone);
-            
         } catch (\Exception $e) {
             \Log::error('WhatsApp Notification Error: ' . $e->getMessage());
             throw new \Exception('Failed to send WhatsApp message: ' . $e->getMessage());
