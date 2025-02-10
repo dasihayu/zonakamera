@@ -9,6 +9,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
+// TODO: Fix when create booking, store product and quantity in booking_product table
 class BookingController extends Controller
 {
     public function index(Request $request)
@@ -43,16 +44,25 @@ class BookingController extends Controller
                 return back()->with('error', 'Cart is empty');
             }
 
-            // Calculate total price
-            $totalPrice = 0;
             $startDate = Carbon::parse($cartItems->first()->start_date);
             $endDate = Carbon::parse($cartItems->first()->end_date);
+            $totalDays = max($startDate->diffInDays($endDate), 1);
 
-            $totalDays = max($startDate->diffInDays($endDate), 1); // At least 1 day
+            // Calculate total price and prepare product details
+            $totalPrice = 0;
+            $productDetails = [];
 
             foreach ($cartItems as $item) {
-                $itemPrice = $item->product->price * $item->quantity * $totalDays; // Price per item multiplied by quantity and days
-                $totalPrice += $itemPrice; // Add to total price
+                $itemPrice = $item->product->price * $item->quantity * $totalDays;
+                $totalPrice += $itemPrice;
+
+                // Store product details for pivot table
+                $productDetails[$item->product_id] = [
+                    'quantity' => $item->quantity,
+                    'price' => $itemPrice,
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ];
             }
 
             // Create booking
@@ -64,13 +74,8 @@ class BookingController extends Controller
                 'status' => 'pending'
             ]);
 
-            // Attach products to booking
-            foreach ($request->input('product_details', []) as $productDetail) {
-                $booking->products()->attach($productDetail['product_id'], [
-                    'quantity' => $productDetail['quantity'],
-                    'total_price' => $productDetail['total_price']
-                ]);
-            }
+            // Attach products with their details
+            $booking->products()->attach($productDetails);
 
             // Clear the cart
             Cart::where('user_id', auth()->id())->delete();
