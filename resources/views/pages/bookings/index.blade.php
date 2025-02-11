@@ -7,7 +7,7 @@
     <div class="relative">
         <!-- Background Image -->
         <img src="{{ asset('storage/' . $page->booking_banner) }}" alt="Hero Image"
-            class="object-cover w-full max-h-80 md:max-h-96 lg:max-h-[600px] blur-sm" />
+            class="object-cover w-full max-h-80 md:max-h-96 blur-sm" />
         <!-- Headline -->
         <div class="absolute inset-0 flex flex-col items-center justify-center text-center">
             <h1 class="text-6xl font-extrabold text-white md:text-8xl drop-shadow-lg">
