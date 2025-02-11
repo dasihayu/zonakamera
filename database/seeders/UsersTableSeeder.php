@@ -6,11 +6,15 @@ use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
+use Faker\Factory as Faker;
+use Illuminate\Support\Facades\Artisan;
 
 class UsersTableSeeder extends Seeder
 {
     public function run()
     {
+        $faker = Faker::create();
+
         // Nonaktifkan foreign key constraints sementara
         DB::statement('SET FOREIGN_KEY_CHECKS=0;');
 
@@ -37,7 +41,7 @@ class UsersTableSeeder extends Seeder
             'updated_at' => now(),
         ]);
 
-        // Buat pengguna admin
+        // Buat pengguna superadmin
         $adminId = Str::uuid();
         DB::table('users')->insert([
             'id' => $adminId,
@@ -51,30 +55,35 @@ class UsersTableSeeder extends Seeder
             'updated_at' => now(),
         ]);
 
+        // Bind superadmin user to FilamentShield
+        Artisan::call('shield:super-admin', ['--user' => $adminId]);
+
         DB::table('model_has_roles')->insert([
             'role_id' => $adminRoleId,
             'model_type' => 'App\Models\User',
             'model_id' => $adminId,
         ]);
 
-        // Buat pengguna customer
-        $customerId = Str::uuid();
-        DB::table('users')->insert([
-            'id' => $customerId,
-            'username' => 'customeruser',
-            'firstname' => 'Customer',
-            'lastname' => 'User',
-            'email' => 'user@zonakamera.id',
-            'email_verified_at' => now(),
-            'password' => Hash::make('password'),
-            'created_at' => now(),
-            'updated_at' => now(),
-        ]);
+        // Buat 10 pengguna customer secara acak
+        for ($i = 0; $i < 10; $i++) {
+            $customerId = Str::uuid();
+            DB::table('users')->insert([
+                'id' => $customerId,
+                'username' => $faker->unique()->userName,
+                'firstname' => $faker->firstName,
+                'lastname' => $faker->lastName,
+                'email' => $faker->unique()->safeEmail,
+                'email_verified_at' => now(),
+                'password' => Hash::make('password'),
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
 
-        DB::table('model_has_roles')->insert([
-            'role_id' => $customerRoleId,
-            'model_type' => 'App\Models\User',
-            'model_id' => $customerId,
-        ]);
+            DB::table('model_has_roles')->insert([
+                'role_id' => $customerRoleId,
+                'model_type' => 'App\Models\User',
+                'model_id' => $customerId,
+            ]);
+        }
     }
 }
