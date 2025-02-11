@@ -4,6 +4,7 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\BookingController;
 use App\Http\Controllers\CartController;
+use App\Http\Controllers\InvoiceController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PageController;
 
@@ -41,4 +42,5 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/bookings', [BookingController::class, 'createBooking'])->name('bookings.store');
     Route::get('/bookings/{booking}', [BookingController::class, 'show'])->name('bookings.show');
     Route::get('/bookings', [BookingController::class, 'index'])->name('bookings.index');
+    Route::get('/invoice/{booking}', [InvoiceController::class, 'generatePDF'])->name('invoice.download');
 });

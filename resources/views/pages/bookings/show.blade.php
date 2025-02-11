@@ -132,13 +132,13 @@
             <!-- Action Buttons -->
             <div class="flex justify-end mt-6 space-x-3">
                 <a href="{{ route('bookings.index') }}"
-                    class="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary">
+                    class="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50">
                     Back to Bookings
                 </a>
-                <button onclick="window.print()"
-                    class="inline-flex items-center px-4 py-2 text-sm font-medium text-white border border-transparent rounded-md shadow-sm bg-primary hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary">
-                    Print Details
-                </button>
+                <a href="{{ route('invoice.download', $booking->id) }}"
+                    class="inline-flex items-center px-4 py-2 text-sm font-medium text-white border border-transparent rounded-md shadow-sm bg-primary hover:bg-primary-dark">
+                    Download Invoice
+                </a>
             </div>
         </div>
     </div>
