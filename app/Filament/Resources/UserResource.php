@@ -232,22 +232,20 @@ class UserResource extends Resource
         return __("menu.nav_group.access");
     }
 
-    public static function doResendEmailVerification($settings = null, $user): void
+    public static function doResendEmailVerification($user, ?MailSettings $settings = null): void
     {
         if (!method_exists($user, 'notify')) {
             $userClass = $user::class;
-
             throw new Exception("Model [{$userClass}] does not have a [notify()] method.");
         }
 
-        if ($settings->isMailSettingsConfigured()) {
+        if ($settings && $settings->isMailSettingsConfigured()) {
             $notification = new VerifyEmail();
             $notification->url = Filament::getVerifyEmailUrl($user);
 
             $settings->loadMailSettingsToConfig();
 
             $user->notify($notification);
-
 
             Notification::make()
                 ->title(__('resource.user.notifications.verify_sent.title'))
