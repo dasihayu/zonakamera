@@ -109,7 +109,8 @@
                                     </div>
                                 </div>
                                 <div class="flex items-center justify-between px-4 pb-4">
-                                    <p class="font-bold text-md md:text-xl">Rp{{ number_format($product->price, 0, ',', '.') }}</p>
+                                    <p class="font-bold text-md md:text-xl">
+                                        Rp{{ number_format($product->price, 0, ',', '.') }}</p>
                                     @if (Auth::check())
                                         <button onclick="addToCart({{ $product->id }})"
                                             class="flex items-center justify-center w-8 h-8 text-white rounded-full bg-primary hover:bg-primary-dark">
@@ -200,26 +201,32 @@
             Swal.fire({
                 title: 'Rental Details',
                 html: `
-            <div class="space-y-4 text-left w-md">
-                <div>
-                    <label for="start_date" class="w-full mb-2 font-bold">Start Date</label>
-                    <input type="datetime-local" id="start_date" class="max-w-xl p-2 border rounded swal2-input">
+            <div class="space-y-4 text-left">
+                <div class="flex flex-col">
+                    <label for="start_date" class="mb-1 font-semibold">Start Date</label>
+                    <input type="datetime-local" id="start_date" class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary">
                 </div>
-                <div>
-                    <label for="end_date" class="w-full mb-2 font-bold">End Date</label>
-                    <input type="datetime-local" id="end_date" class="max-w-xl p-2 border rounded swal2-input">
+                <div class="flex flex-col">
+                    <label for="end_date" class="mb-1 font-semibold">End Date</label>
+                    <input type="datetime-local" id="end_date" class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary">
                 </div>
-                <div>
-                    <label for="quantity" class="w-full mb-2 font-bold">Quantity</label>
-                    <input type="number" id="quantity" class="max-w-xl p-2 border rounded swal2-input" min="1" value="1">
+                <div class="flex flex-col">
+                    <label for="quantity" class="mb-1 font-semibold">Quantity</label>
+                    <input type="number" id="quantity" class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary" min="1" value="1">
                 </div>
             </div>
         `,
                 showCancelButton: true,
                 confirmButtonText: 'Add to Cart',
-                confirmButtonColor: '#1D4ED8', // primary color
+                confirmButtonColor: '#00457F',
                 cancelButtonText: 'Cancel',
-                cancelButtonColor: '#EF4444', // red color
+                cancelButtonColor: '#EF4444',
+                customClass: {
+                    popup: 'rounded-lg shadow-lg p-6',
+                    title: 'text-lg font-bold',
+                    confirmButton: 'px-4 py-2 text-white bg-primary rounded hover:bg-blue-700',
+                    cancelButton: 'px-4 py-2 text-white bg-gray-200 rounded hover:bg-gray-300',
+                },
                 preConfirm: () => {
                     const startDate = document.getElementById('start_date').value;
                     const endDate = document.getElementById('end_date').value;
@@ -229,7 +236,7 @@
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json',
-                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                                'X-CSRF-TOKEN': csrfToken
                             },
                             body: JSON.stringify({
                                 product_id: productId,
@@ -238,15 +245,8 @@
                                 quantity: quantity
                             })
                         })
-                        .then(response => {
-                            if (!response.ok) {
-                                throw new Error(response.statusText);
-                            }
-                            return response.json();
-                        })
-                        .catch(error => {
-                            Swal.showValidationMessage(`Request failed: ${error}`);
-                        });
+                        .then(response => response.json())
+                        .catch(error => Swal.showValidationMessage(`Request failed: ${error}`));
                 },
             }).then((result) => {
                 if (result.isConfirmed) {
@@ -254,7 +254,11 @@
                         title: 'Success!',
                         text: 'Product added to cart.',
                         icon: 'success',
-                        confirmButtonText: 'OK'
+                        confirmButtonText: 'OK',
+                        customClass: {
+                            confirmButton: 'px-4 py-2 text-white bg-primary rounded hover:bg-blue-700',
+                        },
+
                     });
                 }
             });
