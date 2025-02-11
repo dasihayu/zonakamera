@@ -60,7 +60,7 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail, Has
 
     public function getFilamentName(): string
     {
-        return $this->username;
+        return $this->username ?: 'N/A';
     }
 
     public function canAccessPanel(Panel $panel): bool
