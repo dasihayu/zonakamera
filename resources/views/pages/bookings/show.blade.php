@@ -45,7 +45,7 @@
                                 'picked up' => 'fas fa-truck',
                             ];
                         @endphp
-                        <div class="text-right">
+                        <div class="flex items-center justify-center">
                             <span
                                 class="inline-flex px-3 py-1 text-sm font-semibold leading-5 text-white rounded-full {{ $statusColors[$booking->status] ?? 'bg-gray-500' }}">
                                 <i class="{{ $statusIcons[$booking->status] ?? 'fas fa-info-circle' }} mr-1"></i>
