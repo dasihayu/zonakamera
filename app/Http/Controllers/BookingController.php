@@ -9,7 +9,6 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
-// TODO: Fix when create booking, store product and quantity in booking_product table
 class BookingController extends Controller
 {
     public function index(Request $request)
@@ -44,6 +43,7 @@ class BookingController extends Controller
                 return back()->with('error', 'Cart is empty');
             }
 
+            $user = auth()->user();
             $startDate = Carbon::parse($cartItems->first()->start_date);
             $endDate = Carbon::parse($cartItems->first()->end_date);
             $totalDays = max($startDate->diffInDays($endDate), 1);
@@ -53,7 +53,8 @@ class BookingController extends Controller
             $productDetails = [];
 
             foreach ($cartItems as $item) {
-                $itemPrice = $item->product->price * $item->quantity * $totalDays;
+                $pricePerDay = $item->product->getPriceForUser($user);
+                $itemPrice = $pricePerDay * $item->quantity * $totalDays;
                 $totalPrice += $itemPrice;
 
                 // Store product details for pivot table
@@ -71,7 +72,7 @@ class BookingController extends Controller
                 'price' => $totalPrice,
                 'start_date' => $startDate,
                 'end_date' => $endDate,
-                'status' => 'pending'
+                'status' => 'pending',
             ]);
 
             // Attach products with their details

@@ -112,8 +112,22 @@
                                         </div>
                                     </div>
                                     <div class="flex items-center justify-between px-4 pb-4">
-                                        <p class="font-bold text-md md:text-xl">
-                                            Rp{{ number_format($product->price, 0, ',', '.') }}</p>
+                                        @if (auth()->user()?->is_member)
+                                            <div class="flex flex-col items-start gap-1">
+                                                <span class="text-gray-500 line-through">
+                                                    Rp{{ number_format($product->price, 0, ',', '.') }}
+                                                </span>
+                                                <div class="flex items-center gap-2">
+                                                    <span class="font-bold text-primary">
+                                                        Rp{{ number_format($product->getPriceForUser(auth()->user()), 0, ',', '.') }}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        @else
+                                            <span class="font-bold text-primary">
+                                                Rp{{ number_format($product->price, 0, ',', '.') }}
+                                            </span>
+                                        @endif
                                         @if (Auth::check())
                                             <button onclick="addToCart({{ $product->id }})"
                                                 class="flex items-center justify-center w-8 h-8 text-white rounded-full bg-primary hover:bg-primary-dark">

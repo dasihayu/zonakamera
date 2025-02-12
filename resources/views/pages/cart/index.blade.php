@@ -24,13 +24,13 @@
                         <div class="w-full sm:w-3/4">
                             <h3 class="text-lg font-bold">{{ $item->product->title }}</h3>
                             <p>Quantity: {{ $item->quantity }}</p>
-                            <p>Price per day: Rp{{ number_format($item->product->price, 0, ',', '.') }}</p>
+                            <p>Price per day: Rp{{ number_format($item->product->getPriceForUser(auth()->user()), 0, ',', '.') }}</p>
                             <p>Rental Period: {{ \Carbon\Carbon::parse($item->start_date)->translatedFormat('d F Y') }} to
                                 {{ \Carbon\Carbon::parse($item->end_date)->translatedFormat('d F Y') }}</p>
                         </div>
                         <div class="flex items-center justify-between w-full sm:justify-end sm:w-1/4">
                             <p class="mr-4 text-xl font-bold">
-                                Rp{{ number_format($item->product->price * $item->quantity, 0, ',', '.') }}
+                                Rp{{ number_format($item->product->getPriceForUser(auth()->user()) * $item->quantity, 0, ',', '.') }}
                             </p>
                             <form action="{{ route('cart.delete', $item->id) }}" method="POST">
                                 @csrf

@@ -76,7 +76,7 @@ class Product extends Model
 
         return $newId;
     }
-    
+
     public function categories()
     {
         return $this->belongsToMany(ProductCategory::class, 'product_category', 'product_id', 'category_id');
@@ -87,5 +87,14 @@ class Product extends Model
         return $this->belongsToMany(Booking::class, 'booking_product')
             ->withPivot('quantity', 'price')
             ->withTimestamps();
+    }
+
+    public function getPriceForUser(?User $user = null): float
+    {
+        if ($user && $user->is_member) {
+            return $this->price * 0.9; // 10% discount for members
+        }
+
+        return $this->price;
     }
 }

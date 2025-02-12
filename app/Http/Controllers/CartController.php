@@ -20,18 +20,16 @@ class CartController extends Controller
         ]);
 
         $product = Product::findOrFail($request->product_id);
+        $price = $product->getPriceForUser(auth()->user());
 
-        $cart = Cart::updateOrCreate(
-            [
-                'user_id' => auth()->id(),
-                'product_id' => $request->product_id
-            ],
-            [
-                'quantity' => $request->quantity,
-                'start_date' => $request->start_date,
-                'end_date' => $request->end_date
-            ]
-        );
+        Cart::create([
+            'user_id' => auth()->id(),
+            'product_id' => $product->id,
+            'quantity' => $request->quantity,
+            'price' => $price,
+            'start_date' => $request->start_date,
+            'end_date' => $request->end_date,
+        ]);
 
         return response()->json(['message' => 'Product added to cart']);
     }

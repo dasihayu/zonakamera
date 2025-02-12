@@ -36,12 +36,22 @@
                 </div>
 
                 <!-- Price -->
-                <div class="flex items-center gap-3">
-                    <p class="text-2xl font-bold text-primary md:text-3xl">
+                @if (auth()->user()?->is_member)
+                    <div class="flex flex-col items-start gap-1">
+                        <span class="text-gray-500 line-through">
+                            Rp{{ number_format($product->price, 0, ',', '.') }}
+                        </span>
+                        <div class="flex items-center gap-2">
+                            <span class="text-2xl font-bold text-primary">
+                                Rp{{ number_format($product->getPriceForUser(auth()->user()), 0, ',', '.') }}
+                            </span>
+                        </div>
+                    </div>
+                @else
+                    <span class="text-2xl font-bold text-primary">
                         Rp{{ number_format($product->price, 0, ',', '.') }}
-                    </p>
-                    <span class="text-sm text-gray-500">/ day</span>
-                </div>
+                    </span>
+                @endif
 
                 <!-- Categories -->
                 <div class="flex flex-wrap items-center gap-2">
