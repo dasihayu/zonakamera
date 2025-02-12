@@ -3,7 +3,6 @@
 @section('title', $product->title)
 
 @section('content')
-    <meta name="csrf-token" content="{{ csrf_token() }}">
     <div class="container px-4 py-12 mx-auto md:py-12 lg:py-16">
         <div class="flex flex-col gap-8 lg:flex-row">
             <!-- Product Image Section -->

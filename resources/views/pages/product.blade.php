@@ -15,7 +15,6 @@
             </h1>
         </div>
     </div>
-    <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <div class="flex flex-col items-center justify-center w-full px-6 py-12 my-12">
         <div class="flex flex-col w-full max-w-screen-lg md:flex-row">
