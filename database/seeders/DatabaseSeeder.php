@@ -17,7 +17,8 @@ class DatabaseSeeder extends Seeder
             PageSeeder::class,
             RolesAndPermissionsSeeder::class,
             UsersTableSeeder::class,
-            ProductSeeder::class
+            ProductSeeder::class,
+            VideoSeeder::class
         ]);
 
         Artisan::call('shield:generate --all');
