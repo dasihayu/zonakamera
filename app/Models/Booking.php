@@ -51,7 +51,7 @@ class Booking extends Model
     {
         $this->productDetails = $value;
     }
-    
+
     public function products()
     {
         return $this->belongsToMany(Product::class, 'booking_product')
@@ -64,5 +64,9 @@ class Booking extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function review()
+    {
+        return $this->hasOne(Review::class);
+    }
 }
-    

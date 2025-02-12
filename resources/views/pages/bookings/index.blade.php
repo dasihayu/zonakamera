@@ -153,27 +153,39 @@
                                                     </div>
                                                 </div>
 
-                                                <!-- Footer: Price -->
-                                                <div class="flex items-center justify-between sm:justify-end">
-                                                    <span class="text-sm font-medium text-gray-600 sm:hidden">Total
-                                                        Price:</span>
-                                                    <div class="text-base font-semibold text-gray-900 sm:text-lg">
-                                                        Rp{{ number_format($booking->price, 0, ',', '.') }}
+                                                <!-- Footer: Price and Actions -->
+                                                <div
+                                                    class="flex flex-col gap-4 py-3 bg-gray-50 sm:flex-row sm:items-center sm:justify-between">
+                                                    <!-- Price -->
+                                                    <div class="flex items-center">
+                                                        <span class="text-sm font-medium text-gray-600 sm:hidden">Total
+                                                            Price:</span>
+                                                        <div class="text-base font-semibold text-gray-900 sm:text-lg">
+                                                            Rp{{ number_format($booking->price, 0, ',', '.') }}
+                                                        </div>
+                                                    </div>
+
+                                                    <!-- Action Buttons -->
+                                                    <div class="flex flex-col gap-2 sm:flex-row sm:items-center">
+                                                        <!-- Book Again Button -->
+                                                        {{-- <a href="{{ route('products') }}"
+                                                            class="flex items-center justify-center px-3 py-2 text-xs font-medium text-white transition-colors duration-200 rounded-md sm:text-sm sm:px-4 bg-primary hover:bg-primary-dark">
+                                                            <i class="mr-2 fas fa-redo"></i>
+                                                            Book Again
+                                                        </a> --}}
+
+                                                        <!-- Review Button (if applicable) -->
+                                                        @if ($booking->status === 'completed' && !$booking->review)
+                                                            <button onclick="showReviewModal('{{ $booking->id }}')"
+                                                                class="flex items-center justify-center px-3 py-2 text-xs font-medium text-white transition-colors duration-200 rounded-md sm:text-sm sm:px-4 bg-primary hover:bg-primary-dark">
+                                                                <i class="mr-2 fas fa-star"></i>
+                                                                Leave Review
+                                                            </button>
+                                                        @endif
                                                     </div>
                                                 </div>
                                             </div>
                                         </a>
-
-                                        <!-- Review Button (if applicable) -->
-                                        @if ($booking->status === 'completed' && !$booking->review)
-                                            <div class="px-4 py-3 bg-gray-50 sm:px-6">
-                                                <button onclick="showReviewModal('{{ $booking->id }}')"
-                                                    class="flex items-center justify-center w-full px-3 py-2 text-xs font-medium text-white transition-colors duration-200 rounded-md sm:text-sm sm:px-4 bg-primary hover:bg-primary-dark">
-                                                    <i class="mr-2 fas fa-star"></i>
-                                                    Leave Review
-                                                </button>
-                                            </div>
-                                        @endif
                                     </div>
                                 @endforeach
                             </div>
@@ -277,7 +289,7 @@
             </div>
         `,
                     showCancelButton: true,
-                    confirmButtonText: 'Add to Cart',
+                    confirmButtonText: 'Submit Review',
                     confirmButtonColor: '#00457F',
                     cancelButtonText: 'Cancel',
                     cancelButtonColor: '#EF4444',
