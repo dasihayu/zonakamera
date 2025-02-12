@@ -58,7 +58,7 @@
                                 About
                             </a>
                             <a href="{{ route('products') }}"
-                                class="w-full text-lg font-semibold text-center text-gray-800 hover:text-gray-600 md:w-auto {{ Route::is('products') ? 'border-b-2 border-primary' : '' }}">
+                                class="w-full text-lg font-semibold text-center text-gray-800 hover:text-gray-600 md:w-auto {{ request()->is('products*') ? 'border-b-2 border-primary' : '' }}">
                                 Product
                             </a>
 

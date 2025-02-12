@@ -24,6 +24,7 @@ Route::get('/', [PageController::class, 'home'])->name('home');
 Route::get('/about', [PageController::class, 'about'])->name('about');
 
 Route::get('/products', [PageController::class, 'product'])->name('products');
+Route::get('/products/{id}', [PageController::class, 'showProduct'])->name('products.show');
 
 // Route::get('/info', [PageController::class, 'info'])->name('info' );
 // Route::get('/featured', [PageController::class, 'featured'])->name('featured' );

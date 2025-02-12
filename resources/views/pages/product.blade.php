@@ -84,44 +84,48 @@
                 @if ($products->count() > 0)
                     <div class="grid grid-cols-2 gap-6 md:grid-cols-3">
                         @foreach ($products as $product)
-                            <div class="flex flex-col bg-[#f7f7f7] rounded-b-lg">
-                                <img src="{{ asset('storage/' . $product->image_url) }}" class="object-cover w-full"
-                                    alt="Product Image">
-                                <div class="flex flex-col gap-2 p-4">
-                                    <div class="flex space-x-2">
-                                        @foreach ($product->categories as $category)
-                                            <span
-                                                class="px-1 py-0.5 text-xs bg-blue-100 text-primary rounded-full border border-primary-light">
-                                                {{ $category->name }}
-                                            </span>
-                                        @endforeach
+                            <div class="col-span-1">
+                                <div class="flex flex-col bg-[#f7f7f7] rounded-b-lg">
+                                    <a href="{{ route('products.show', $product->id) }}">
+                                        <img src="{{ asset('storage/' . $product->image_url) }}"
+                                            class="object-cover w-full" alt="Product Image">
+                                    </a>
+                                    <div class="flex flex-col gap-2 p-4">
+                                        <div class="flex space-x-2">
+                                            @foreach ($product->categories as $category)
+                                                <span
+                                                    class="px-1 py-0.5 text-xs bg-blue-100 text-primary rounded-full border border-primary-light">
+                                                    {{ $category->name }}
+                                                </span>
+                                            @endforeach
+                                        </div>
+                                        <p class="text-lg font-bold text-left truncate">{{ $product->title }}</p>
+                                        <div class="flex items-center gap-1">
+                                            @for ($i = 0; $i < 5; $i++)
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-yellow-400"
+                                                    fill="currentColor" viewBox="0 0 24 24">
+                                                    <path
+                                                        d="M12 .587l3.668 7.431 8.2 1.191-5.934 5.786 1.4 8.164L12 18.897l-7.334 3.862 1.4-8.164L.132 9.209l8.2-1.191L12 .587z" />
+                                                </svg>
+                                            @endfor
+                                            <span class="text-sm text-gray-500">(5.0)</span>
+                                        </div>
                                     </div>
-                                    <p class="text-lg font-bold text-left truncate">{{ $product->title }}</p>
-                                    <div class="flex items-center gap-1">
-                                        @for ($i = 0; $i < 5; $i++)
-                                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-yellow-400"
-                                                fill="currentColor" viewBox="0 0 24 24">
-                                                <path
-                                                    d="M12 .587l3.668 7.431 8.2 1.191-5.934 5.786 1.4 8.164L12 18.897l-7.334 3.862 1.4-8.164L.132 9.209l8.2-1.191L12 .587z" />
-                                            </svg>
-                                        @endfor
-                                        <span class="text-sm text-gray-500">(5.0)</span>
+                                    <div class="flex items-center justify-between px-4 pb-4">
+                                        <p class="font-bold text-md md:text-xl">
+                                            Rp{{ number_format($product->price, 0, ',', '.') }}</p>
+                                        @if (Auth::check())
+                                            <button onclick="addToCart({{ $product->id }})"
+                                                class="flex items-center justify-center w-8 h-8 text-white rounded-full bg-primary hover:bg-primary-dark">
+                                                +
+                                            </button>
+                                        @else
+                                            <a href="{{ route('login') }}"
+                                                class="flex items-center justify-center w-8 h-8 text-white rounded-full bg-primary hover:bg-primary-dark">
+                                                +
+                                            </a>
+                                        @endif
                                     </div>
-                                </div>
-                                <div class="flex items-center justify-between px-4 pb-4">
-                                    <p class="font-bold text-md md:text-xl">
-                                        Rp{{ number_format($product->price, 0, ',', '.') }}</p>
-                                    @if (Auth::check())
-                                        <button onclick="addToCart({{ $product->id }})"
-                                            class="flex items-center justify-center w-8 h-8 text-white rounded-full bg-primary hover:bg-primary-dark">
-                                            +
-                                        </button>
-                                    @else
-                                        <a href="{{ route('login') }}"
-                                            class="flex items-center justify-center w-8 h-8 text-white rounded-full bg-primary hover:bg-primary-dark">
-                                            +
-                                        </a>
-                                    @endif
                                 </div>
                             </div>
                         @endforeach

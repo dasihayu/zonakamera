@@ -53,6 +53,14 @@ class PageController extends Controller
         return view('pages.product', compact('page', 'products', 'categories'));
     }
 
+    public function showProduct($id)
+    {
+        $page = Page::first();
+        $product = Product::findOrFail($id);
+
+        return view('pages.product-show', compact('page', 'product'));
+    }
+
 
     // public function featured()
     // {
