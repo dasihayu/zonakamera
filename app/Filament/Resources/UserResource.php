@@ -179,13 +179,27 @@ class UserResource extends Resource
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-            ])
-            ->filters([
-                //
+                Tables\Columns\IconColumn::make('is_member')
+                    ->label('Member Status')
+                    ->boolean()
+                    ->sortable(),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
+                Tables\Actions\Action::make('toggleMember')
+                    ->label(fn(User $record): string => $record->is_member ? 'Remove Member' : 'Make Member')
+                    ->icon(fn(User $record): string => $record->is_member ? 'heroicon-o-x-circle' : 'heroicon-o-check-circle')
+                    ->color(fn(User $record): string => $record->is_member ? 'danger' : 'success')
+                    ->action(function (User $record): void {
+                        $record->update(['is_member' => !$record->is_member]);
+
+                        Notification::make()
+                            ->title($record->is_member ? 'User is now a member' : 'User is no longer a member')
+                            ->success()
+                            ->send();
+                    })
+                    ->requiresConfirmation()
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

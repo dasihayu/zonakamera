@@ -35,7 +35,8 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail, Has
         'firstname',
         'lastname',
         'password',
-        'phone'
+        'phone',
+        'is_member',
     ];
 
     /**
@@ -56,6 +57,7 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail, Has
     protected $casts = [
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
+        'is_member' => 'boolean',
     ];
 
     public function getFilamentName(): string
