@@ -8,10 +8,13 @@
             @foreach ($videos as $video)
                 <div class="relative swiper-slide group">
                     <a href="https://www.instagram.com/zonakamerasemarang/" target="blank">
-                        <video class="object-cover w-full h-64 rounded-lg md:h-96 lg:h-128" muted>
-                            <source src="{{ Storage::url($video->url) }}" type="video/mp4">
+                        <video class="object-cover w-full h-64 rounded-lg md:h-96 lg:h-128" muted playsinline
+                            preload="metadata" controlsList="nodownload">
+                            <source src="{{ asset('storage/' . $video->url) }}" type="video/mp4">
+                            Your browser does not support the video tag.
                         </video>
-                        <div class="absolute inset-0 flex flex-col items-center justify-center p-4 text-white transition-opacity duration-300 bg-black bg-opacity-50 rounded-lg opacity-0 group-hover:opacity-100">
+                        <div
+                            class="absolute inset-0 flex flex-col items-center justify-center p-4 text-white transition-opacity duration-300 bg-black bg-opacity-50 rounded-lg opacity-0 group-hover:opacity-100">
                             <h3 class="mb-2 text-lg font-bold text-center md:text-xl">{{ $video->title }}</h3>
                             <p class="text-xs text-center md:text-sm">{{ $video->description }}</p>
                         </div>
