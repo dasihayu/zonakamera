@@ -6,27 +6,24 @@ use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
-use Faker\Factory;
 use Illuminate\Support\Facades\Artisan;
 
 class UsersTableSeeder extends Seeder
 {
     public function run()
     {
-        $faker = Factory::create();
-
-        // Nonaktifkan foreign key constraints sementara
+        // Disable foreign key checks temporarily
         DB::statement('SET FOREIGN_KEY_CHECKS=0;');
 
-        // Hapus data lama
+        // Clear existing data
         DB::table('model_has_roles')->truncate();
         DB::table('users')->truncate();
         DB::table('roles')->truncate();
 
-        // Aktifkan kembali foreign key constraints
+        // Enable foreign key checks
         DB::statement('SET FOREIGN_KEY_CHECKS=1;');
 
-        // Buat role admin dan customer
+        // Create admin and customer roles
         $adminRoleId = DB::table('roles')->insertGetId([
             'name' => 'admin',
             'guard_name' => 'web',
@@ -41,21 +38,22 @@ class UsersTableSeeder extends Seeder
             'updated_at' => now(),
         ]);
 
-        // Buat pengguna superadmin
+        // Create admin user
         $adminId = Str::uuid();
         DB::table('users')->insert([
             'id' => $adminId,
             'username' => 'superadmin',
             'firstname' => 'Super',
             'lastname' => 'Admin',
-            'email' => 'superadmin@zonakamera.id',
+            'email' => 'admin@zonakamera.id',
+            'phone' => '081234567890',
             'email_verified_at' => now(),
-            'password' => Hash::make('superadmin'),
+            'password' => Hash::make('admin123'),
             'created_at' => now(),
             'updated_at' => now(),
         ]);
 
-        // Bind superadmin user to FilamentShield
+        // Bind admin user to FilamentShield
         Artisan::call('shield:super-admin', ['--user' => $adminId]);
 
         DB::table('model_has_roles')->insert([
@@ -64,26 +62,25 @@ class UsersTableSeeder extends Seeder
             'model_id' => $adminId,
         ]);
 
-        // Buat 10 pengguna customer secara acak
-        for ($i = 0; $i < 10; $i++) {
-            $customerId = Str::uuid();
-            DB::table('users')->insert([
-                'id' => $customerId,
-                'username' => $faker->unique()->userName,
-                'firstname' => $faker->firstName,
-                'lastname' => $faker->lastName,
-                'email' => $faker->unique()->safeEmail,
-                'email_verified_at' => now(),
-                'password' => Hash::make('password'),
-                'created_at' => now(),
-                'updated_at' => now(),
-            ]);
+        // Create one customer user
+        $customerId = Str::uuid();
+        DB::table('users')->insert([
+            'id' => $customerId,
+            'username' => 'customer',
+            'firstname' => 'John',
+            'lastname' => 'Doe',
+            'email' => 'customer@example.com',
+            'phone' => '081234567891',
+            'email_verified_at' => now(),
+            'password' => Hash::make('customer123'),
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
 
-            DB::table('model_has_roles')->insert([
-                'role_id' => $customerRoleId,
-                'model_type' => 'App\Models\User',
-                'model_id' => $customerId,
-            ]);
-        }
+        DB::table('model_has_roles')->insert([
+            'role_id' => $customerRoleId,
+            'model_type' => 'App\Models\User',
+            'model_id' => $customerId,
+        ]);
     }
 }
