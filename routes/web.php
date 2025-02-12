@@ -7,6 +7,7 @@ use App\Http\Controllers\CartController;
 use App\Http\Controllers\InvoiceController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PageController;
+use App\Http\Controllers\ReviewController;
 
 /*
 |--------------------------------------------------------------------------
@@ -44,4 +45,5 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/bookings/{booking}', [BookingController::class, 'show'])->name('bookings.show');
     Route::get('/bookings', [BookingController::class, 'index'])->name('bookings.index');
     Route::get('/invoice/{booking}', [InvoiceController::class, 'generatePDF'])->name('invoice.download');
+    Route::post('/reviews', [ReviewController::class, 'store'])->name('reviews.store');
 });
