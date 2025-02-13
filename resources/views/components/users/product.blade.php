@@ -35,13 +35,13 @@
                                 Rp{{ number_format($product->price, 0, ',', '.') }}
                             </span>
                             <div class="flex items-center gap-2">
-                                <span class="font-bold text-primary">
+                                <span class="font-bold text-lg text-primary">
                                     Rp{{ number_format($product->getPriceForUser(auth()->user()), 0, ',', '.') }}
                                 </span>
                             </div>
                         </div>
                     @else
-                        <span class="font-bold text-primary">
+                        <span class="font-bold text-lg text-primary">
                             Rp{{ number_format($product->price, 0, ',', '.') }}
                         </span>
                     @endif
