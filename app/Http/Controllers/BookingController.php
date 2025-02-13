@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Booking;
 use App\Models\Cart;
 use App\Models\Page;
+use App\Models\Voucher;
+use App\Models\VoucherUsage;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -48,25 +50,35 @@ class BookingController extends Controller
             $endDate = Carbon::parse($cartItems->first()->end_date);
             $totalDays = max($startDate->diffInDays($endDate), 1);
 
-            // Calculate total price and prepare product details
             $totalPrice = 0;
             $productDetails = [];
 
+            // Check voucher validity
+            $useNormalPrice = false;
+            if ($request->voucher_code) {
+                $voucher = Voucher::where('code', $request->voucher_code)
+                    ->where('is_active', true)
+                    ->first();
+
+                $useNormalPrice = $voucher && $voucher->isValid() && $user->is_member;
+            }
+
             foreach ($cartItems as $item) {
-                $pricePerDay = $item->product->getPriceForUser($user);
+                // Calculate price per day based on voucher usage
+                $pricePerDay = $useNormalPrice ? $item->product->price : $item->product->getPriceForUser($user);
                 $itemPrice = $pricePerDay * $item->quantity * $totalDays;
                 $totalPrice += $itemPrice;
 
-                // Store product details for pivot table
+                // Store per-day price and total price in pivot
                 $productDetails[$item->product_id] = [
                     'quantity' => $item->quantity,
-                    'price' => $itemPrice,
+                    'price' => $pricePerDay, // Store price per day
                     'created_at' => now(),
                     'updated_at' => now(),
                 ];
             }
 
-            // Create booking
+            // Create booking record
             $booking = Booking::create([
                 'user_id' => auth()->id(),
                 'price' => $totalPrice,
@@ -77,6 +89,24 @@ class BookingController extends Controller
 
             // Attach products with their details
             $booking->products()->attach($productDetails);
+
+            // Apply voucher discount after products are attached
+            if ($request->voucher_code && isset($voucher) && $voucher->isValid()) {
+                $discountAmount = $voucher->calculateDiscount($totalPrice);
+                $totalPrice -= $discountAmount;
+
+                // Record voucher usage
+                $voucher->increment('used_count');
+                VoucherUsage::create([
+                    'voucher_id' => $voucher->id,
+                    'user_id' => auth()->id(),
+                    'booking_id' => $booking->id,
+                    'discount_amount' => $discountAmount
+                ]);
+
+                $booking->price = $totalPrice;
+                $booking->save();
+            }
 
             // Clear the cart
             Cart::where('user_id', auth()->id())->delete();

@@ -46,4 +46,5 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/bookings', [BookingController::class, 'index'])->name('bookings.index');
     Route::get('/invoice/{booking}', [InvoiceController::class, 'generatePDF'])->name('invoice.download');
     Route::post('/reviews', [ReviewController::class, 'store'])->name('reviews.store');
+    Route::post('/cart/verify-voucher', [CartController::class, 'verifyVoucher'])->name('cart.verify-voucher');
 });

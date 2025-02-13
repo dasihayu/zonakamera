@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Cart;
 use App\Models\Page;
 use App\Models\Product;
+use App\Models\Voucher;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
@@ -58,5 +59,58 @@ class CartController extends Controller
         $cartItem->delete();
 
         return response()->json(['message' => 'Product removed from cart']);
+    }
+
+    public function verifyVoucher(Request $request)
+    {
+        $request->validate([
+            'code' => 'required|string'
+        ]);
+
+        $voucher = Voucher::where('code', $request->code)
+            ->where('is_active', true)
+            ->first();
+
+        if (!$voucher) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Invalid voucher code'
+            ], 404);
+        }
+
+        if (!$voucher->isValid()) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Voucher has expired or reached maximum usage'
+            ], 400);
+        }
+
+        // Calculate total price before discount
+        $cartItems = Cart::where('user_id', auth()->id())
+            ->with('product')
+            ->get();
+
+        $totalPrice = $cartItems->sum(function ($item) {
+            $startDate = Carbon::parse($item->start_date);
+            $endDate = Carbon::parse($item->end_date);
+            $totalDays = max($startDate->diffInDays($endDate), 1);
+
+            $price = $item->product->price;
+
+            return $price * $item->quantity * $totalDays;
+        });
+
+        $discountAmount = $voucher->calculateDiscount($totalPrice);
+
+        return response()->json([
+            'status' => 'success',
+            'voucher' => [
+                'code' => $voucher->code,
+                'type' => $voucher->type,
+                'value' => $voucher->value,
+                'discount_amount' => $discountAmount,
+                'final_price' => $totalPrice - $discountAmount
+            ]
+        ]);
     }
 }

@@ -124,6 +124,11 @@
                             <p class="text-2xl font-bold text-gray-900">
                                 Rp{{ number_format($booking->price, 0, ',', '.') }}
                             </p>
+                            @if($booking->voucherUsage)
+                                <p class="text-sm text-gray-500">
+                                    Harga setelah menggunakan voucher
+                                </p>
+                            @endif
                         </div>
                     </div>
                 </div>
