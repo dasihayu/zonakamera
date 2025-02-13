@@ -10,7 +10,19 @@ class FonnteService
     public static function sendMessage(array $data)
     {
         $url = 'https://api.fonnte.com/send';
-        $token = env('FONNTE_API_KEY');
+        $token = config('services.fonnte.token'); // Gunakan config daripada env langsung
+
+        // Validate token first
+        if (empty($token)) {
+            Log::error('Fonnte token is empty');
+            throw new \Exception('Fonnte API token is not configured');
+        }
+
+        // Debug token
+        Log::info('Fonnte Token:', [
+            'token_length' => strlen($token),
+            'token_prefix' => substr($token, 0, 5) . '...',
+        ]);
 
         // Debug input data
         Log::info('Fonnte Request Data:', [

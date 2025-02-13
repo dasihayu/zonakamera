@@ -33,6 +33,10 @@ return [
 
     'google' => [
         'spreadsheet_id' => env('GOOGLE_SPREADSHEET_ID'),
-    ]
+    ],
+
+    'fonnte' => [
+        'token' => env('FONNTE_API_KEY'),
+    ],
 
 ];
