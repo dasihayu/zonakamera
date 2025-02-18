@@ -7,6 +7,7 @@ use App\Http\Controllers\CartController;
 use App\Http\Controllers\InvoiceController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PageController;
+use App\Http\Controllers\Auth\PasswordController;
 use App\Http\Controllers\ReviewController;
 
 /*
@@ -47,4 +48,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/invoice/{booking}', [InvoiceController::class, 'generatePDF'])->name('invoice.download');
     Route::post('/reviews', [ReviewController::class, 'store'])->name('reviews.store');
     Route::post('/cart/verify-voucher', [CartController::class, 'verifyVoucher'])->name('cart.verify-voucher');
+    Route::get('/password/change', [PasswordController::class, 'showChangeForm'])->name('password.change');
+    Route::post('/password/change', [PasswordController::class, 'change'])->name('password.update');
+
 });

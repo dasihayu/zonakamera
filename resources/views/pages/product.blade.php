@@ -282,3 +282,9 @@
         }
     </script>
 @endsection
+
+
+{{-- 
+    1. Fungsi id di erd
+    2. Erd masih salah, entity bakal calon pdm
+--}}

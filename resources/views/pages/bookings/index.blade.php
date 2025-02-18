@@ -47,6 +47,16 @@
                                 </svg>
                                 <span>Joined since {{ auth()->user()->created_at->format('M Y') }}</span>
                             </div>
+                            <div class="flex items-center gap-2 p-2 text-gray-600 hover:bg-gray-100 rounded-md">
+                                <a href="{{ route('password.change') }}" class="flex items-center w-full gap-2">
+                                    <svg class="w-5 h-5 text-primary" fill="none" stroke="currentColor"
+                                        viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" />
+                                    </svg>
+                                    <span>Change Password</span>
+                                </a>
+                            </div>
                             <form action="{{ route('logout') }}" method="POST" class="p-2 bg-red-500 rounded-md">
                                 @csrf
                                 <button type="submit" class="flex items-center w-full gap-2 text-white ">
@@ -185,8 +195,10 @@
                                                         @if ($booking->status === 'completed' && $booking->review)
                                                             <div class="flex items-center">
                                                                 @for ($i = 1; $i <= 5; $i++)
-                                                                    <svg class="w-5 h-5 {{ $i <= $booking->review->rating ? 'text-yellow-500' : 'text-gray-300' }}" fill="currentColor" viewBox="0 0 20 20">
-                                                                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.957a1 1 0 00.95.69h4.162c.969 0 1.371 1.24.588 1.81l-3.37 2.448a1 1 0 00-.364 1.118l1.287 3.957c.3.921-.755 1.688-1.54 1.118l-3.37-2.448a1 1 0 00-1.175 0l-3.37 2.448c-.784.57-1.838-.197-1.54-1.118l1.287-3.957a1 1 0 00-.364-1.118L2.05 9.384c-.783-.57-.38-1.81.588-1.81h4.162a1 1 0 00.95-.69l1.286-3.957z" />
+                                                                    <svg class="w-5 h-5 {{ $i <= $booking->review->rating ? 'text-yellow-500' : 'text-gray-300' }}"
+                                                                        fill="currentColor" viewBox="0 0 20 20">
+                                                                        <path
+                                                                            d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.957a1 1 0 00.95.69h4.162c.969 0 1.371 1.24.588 1.81l-3.37 2.448a1 1 0 00-.364 1.118l1.287 3.957c.3.921-.755 1.688-1.54 1.118l-3.37-2.448a1 1 0 00-1.175 0l-3.37 2.448c-.784.57-1.838-.197-1.54-1.118l1.287-3.957a1 1 0 00-.364-1.118L2.05 9.384c-.783-.57-.38-1.81.588-1.81h4.162a1 1 0 00.95-.69l1.286-3.957z" />
                                                                     </svg>
                                                                 @endfor
                                                             </div>
