@@ -39,4 +39,9 @@ return [
         'token' => env('FONNTE_API_KEY'),
     ],
 
+    'zuwinda' => [
+        'token' => env('ZUWINDA_API_KEY'),
+        'account_id' => env('ZUWINDA_ACCOUNT_ID'),
+    ],
+
 ];

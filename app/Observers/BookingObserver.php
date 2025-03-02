@@ -5,6 +5,7 @@ namespace App\Observers;
 use App\Models\Booking;
 use App\Services\FonnteService;
 use App\Services\GoogleSheetsService;
+use App\Services\ZuwindaService;
 use Illuminate\Support\Facades\Log;
 
 class BookingObserver
@@ -48,7 +49,7 @@ class BookingObserver
         ];
 
         try {
-            FonnteService::sendMessage($data);
+            ZuwindaService::sendMessage($data);
         } catch (\Exception $e) {
             Log::error("Gagal mengirim pesan ke {$user->phone}: " . $e->getMessage());
         }
