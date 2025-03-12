@@ -34,22 +34,24 @@
                     </div>
                 </div>
 
-                <!-- Price -->
+                <!-- Price Section -->
                 @if (auth()->user()?->is_member)
-                    <div class="flex flex-col items-start gap-1">
-                        <span class="text-gray-500 line-through">
-                            Rp{{ number_format($product->price, 0, ',', '.') }}
-                        </span>
+                    <div class="flex flex-col items-start gap-2">
                         <div class="flex items-center gap-2">
-                            <span class="text-2xl font-bold text-primary">
-                                Rp{{ number_format($product->getPriceForUser(auth()->user()), 0, ',', '.') }}
+                            <span class="text-lg text-gray-500 line-through">
+                                Rp{{ number_format($product->price, 0, ',', '.') }}
                             </span>
                         </div>
+                        <span class="text-3xl font-bold text-primary">
+                            Rp{{ number_format($product->getPriceForUser(auth()->user()), 0, ',', '.') }}
+                        </span>
                     </div>
                 @else
-                    <span class="text-2xl font-bold text-primary">
-                        Rp{{ number_format($product->price, 0, ',', '.') }}
-                    </span>
+                    <div class="flex flex-col items-start gap-2">
+                        <span class="text-3xl font-bold text-primary">
+                            Rp{{ number_format($product->price, 0, ',', '.') }}
+                        </span>
+                    </div>
                 @endif
 
                 <!-- Categories -->
