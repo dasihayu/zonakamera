@@ -211,7 +211,7 @@ class ProductSeeder extends Seeder
             [
                 'title' => 'Fuji XT100',
                 'price' => 110000,
-                'image_url' => 'Fuji XT100.jpg',
+                'image_url' => 'Fuji Xt100.jpg',
                 'categories' => [3, 7]
             ],
             [
