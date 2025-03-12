@@ -199,7 +199,7 @@ class ProductSeeder extends Seeder
             [
                 'title' => 'Canon EOS R',
                 'price' => 250000,
-                'image_url' => 'Canon eos R_web.jpg',
+                'image_url' => 'Canon Eos R_web.jpg',
                 'categories' => [2, 6]
             ],
             [
@@ -427,7 +427,7 @@ class ProductSeeder extends Seeder
             [
                 'title' => 'Fujinon 23mm f1.4',
                 'price' => 100000,
-                'image_url' => 'fuji 23mm_web best seller.jpg.png',
+                'image_url' => 'fuji 23mm_web best seller.jpg',
                 'categories' => [3, 11]
             ],
             [
