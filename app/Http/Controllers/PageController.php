@@ -14,7 +14,7 @@ class PageController extends Controller
     {
         $page = Page::first();
         $videos = Video::where('is_active', true)->get();
-        $products = Product::with('categories')->where('is_visible',  true)->take(5)->get();
+        $products = Product::with('categories')->where('is_visible',  true)->take(4)->get();
 
         return view('pages.home',  compact('page',  'products', 'videos'));
     }
