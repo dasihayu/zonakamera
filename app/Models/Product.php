@@ -17,7 +17,8 @@ class Product extends Model
         'is_visible',
         'price',
         'description',
-        'image_url'
+        'image_url',
+        'description',
     ];
 
     protected static function booted()

@@ -45,6 +45,18 @@ class ProductResource extends Resource
                                             ->maxLength(255)
                                             ->required()
                                             ->columnSpan(2),
+                                        Forms\Components\RichEditor::make('description')
+                                            ->label('Description')
+                                            ->toolbarButtons([
+                                                'bold',
+                                                'italic',
+                                                'underline',
+                                                'bulletList',
+                                                'orderedList',
+                                                'link',
+                                            ])
+                                            ->required()
+                                            ->columnSpan(2),
                                         Forms\Components\Select::make('categories')
                                             ->label('Category')
                                             ->relationship('categories', 'name', function (Builder $query) {
@@ -136,7 +148,7 @@ class ProductResource extends Resource
                         $record->is_visible = !$record->is_visible;
                         $record->save();
                     })
-                ])
+            ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
