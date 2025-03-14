@@ -34,6 +34,91 @@ class ProductSeeder extends Seeder
         return "{$categoryPart}-{$titlePart}-{$randomPart}";
     }
 
+    private function generateDescription($title, $categories)
+    {
+        $brandDescriptions = [
+            'Sony' => [
+                'Professional mirrorless camera from Sony with exceptional image quality.',
+                'High-performance Sony camera perfect for both photo and video.',
+                'Advanced Sony imaging technology for professional results.',
+            ],
+            'Canon' => [
+                'Reliable Canon DSLR camera for versatile photography needs.',
+                'Professional-grade Canon camera with excellent image quality.',
+                'Feature-rich Canon camera suitable for various shooting conditions.',
+            ],
+            'Fuji' => [
+                'Classic Fujifilm design with modern imaging capabilities.',
+                'Premium Fujifilm camera with unique color science.',
+                'Compact Fujifilm camera delivering outstanding image quality.',
+            ],
+            'Lumix' => [
+                'Versatile Panasonic Lumix camera for creative photography.',
+                'Professional Lumix camera with advanced video features.',
+                'High-quality Lumix imaging system for content creators.',
+            ],
+        ];
+
+        $lensDescriptions = [
+            'Perfect for portrait photography with beautiful bokeh.',
+            'Ideal for landscape and architectural photography.',
+            'Versatile zoom range for various shooting scenarios.',
+            'Sharp and fast lens for professional results.',
+            'Premium optics for exceptional image quality.',
+        ];
+
+        $accessoryDescriptions = [
+            'Essential photography accessory for professional work.',
+            'High-quality equipment for enhanced shooting experience.',
+            'Professional-grade accessory for optimal results.',
+            'Must-have tool for serious photographers.',
+            'Reliable equipment for professional photography.',
+        ];
+
+        $features = [
+            'Includes professional carrying case',
+            'Compatible with various camera systems',
+            'Weather-sealed construction',
+            'Lightweight and portable design',
+            'Professional build quality',
+            'Perfect for both studio and outdoor use',
+        ];
+
+        // Fix the str_contains check
+        $isCamera = str_contains(strtolower($title), 'sony') ||
+            str_contains(strtolower($title), 'canon') ||
+            str_contains(strtolower($title), 'fuji') ||
+            str_contains(strtolower($title), 'lumix');
+
+        $isLens = str_contains(strtolower($title), 'mm') ||
+            str_contains(strtolower($title), 'lens') ||
+            str_contains(strtolower($title), 'lensa');
+
+        // Generate base description
+        $baseDesc = '';
+        if ($isCamera) {
+            foreach ($brandDescriptions as $brand => $descriptions) {
+                if (str_contains($title, $brand)) {
+                    $baseDesc = $descriptions[array_rand($descriptions)];
+                    break;
+                }
+            }
+        } elseif ($isLens) {
+            $baseDesc = $lensDescriptions[array_rand($lensDescriptions)];
+        } else {
+            $baseDesc = $accessoryDescriptions[array_rand($accessoryDescriptions)];
+        }
+
+        // Add random features
+        $randomFeatures = array_rand(array_flip($features), 2);
+        $description = $baseDesc . ' ' . implode('. ', $randomFeatures) . '.';
+
+        // Add rental note
+        $description .= ' Available for daily rental at Zona Kamera Semarang.';
+
+        return $description;
+    }
+
     public function run()
     {
         // Categories
@@ -790,7 +875,7 @@ class ProductSeeder extends Seeder
                     ->value('name');
 
                 $productId = $this->generateUniqueId($categoryName, $product['title']);
-
+                $description = $this->generateDescription($product['title'], $product['categories']);
 
                 // Move image to storage
                 $oldPath = public_path('images/products/' . $product['image_url']);
@@ -807,6 +892,7 @@ class ProductSeeder extends Seeder
                     'title' => $product['title'],
                     'price' => $product['price'],
                     'image_url' => $newPath,
+                    'description' => $description,
                     'is_visible' => 1,
                     'created_at' => now(),
                     'updated_at' => now(),
