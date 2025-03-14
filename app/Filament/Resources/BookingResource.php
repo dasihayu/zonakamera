@@ -280,16 +280,64 @@ class BookingResource extends Resource
                                 ->default(fn($record) => $record->status),
                         ])
                         ->action(fn($record, array $data) => $record->update(['status' => $data['status']])),
+                    Tables\Actions\Action::make('sendWhatsApp')
+                        ->label('Send WhatsApp')
+                        ->icon('heroicon-o-chat-bubble-left-right')
+                        ->color('success')
+                        ->url(function ($record) {
+                            $phone = $record->user->phone;
+                            // Remove any non-numeric characters and ensure starts with 62
+                            $phone = preg_replace('/[^0-9]/', '', $phone);
+                            if (str_starts_with($phone, '0')) {
+                                $phone = '62' . substr($phone, 1);
+                            } elseif (!str_starts_with($phone, '62')) {
+                                $phone = '62' . $phone;
+                            }
 
+                            $message = urlencode(
+                                "Halo {$record->user->firstname},\n\n" .
+                                    "Terima kasih telah melakukan booking di Zona Kamera Semarang.\n\n" .
+                                    "Detail Booking:\n" .
+                                    "Tanggal: " . $record->start_date->format('d F Y') . " - " . $record->end_date->format('d F Y') . "\n" .
+                                    "Total: Rp " . number_format($record->price, 0, ',', '.') . "\n\n" .
+                                    "Silakan hubungi kami jika ada pertanyaan.\n\n" .
+                                    "Best regards,\n" .
+                                    "Zona Kamera Semarang"
+                            );
+
+                            return "https://wa.me/{$phone}?text={$message}";
+                        })
+                        ->openUrlInNewTab(),
                     Tables\Actions\Action::make('sendReminder')
-                        ->label('Send Reminder')
-                        ->icon('heroicon-o-bell')
-                        ->color('warning')
-                        ->requiresConfirmation()
-                        ->modalHeading('Send Return Reminder')
-                        ->modalDescription('Are you sure you want to send a reminder to the customer?')
-                        ->action(fn($record) => static::sendReminder($record))
-                        ->hidden(fn($record) => $record->status !== 'not returned' || Carbon::parse($record->end_date)->isAfter(today())),
+                        ->label('Send Return Reminder')
+                        ->icon('heroicon-o-exclamation-triangle')
+                        ->color('danger')
+                        ->visible(fn($record) => $record->status === 'not returned')
+                        ->url(function ($record) {
+                            $phone = $record->user->phone;
+                            // Format phone number
+                            $phone = preg_replace('/[^0-9]/', '', $phone);
+                            if (str_starts_with($phone, '0')) {
+                                $phone = '62' . substr($phone, 1);
+                            } elseif (!str_starts_with($phone, '62')) {
+                                $phone = '62' . $phone;
+                            }
+
+                            $daysLate = now()->diffInDays($record->end_date);
+                            $message = urlencode(
+                                "Halo {$record->user->firstname},\n\n" .
+                                    "Kami ingin mengingatkan bahwa barang yang Anda sewa belum dikembalikan.\n\n" .
+                                    "Detail Booking:\n" .
+                                    "Tanggal Sewa: " . $record->start_date->format('d F Y') . " - " . $record->end_date->format('d F Y') . "\n" .
+                                    "Item: " . $record->products->pluck('title')->implode(', ') . "\n\n" .
+                                    "Mohon segera menghubungi kami untuk pengembalian barang.\n\n" .
+                                    "Best regards,\n" .
+                                    "Zona Kamera Semarang"
+                            );
+
+                            return "https://wa.me/{$phone}?text={$message}";
+                        })
+                        ->openUrlInNewTab()
                 ])
             ])
             ->bulkActions([
@@ -313,44 +361,6 @@ class BookingResource extends Resource
             'create' => Pages\CreateBooking::route('/create'),
             'edit' => Pages\EditBooking::route('/{record}/edit'),
         ];
-    }
-
-    protected static function sendReminder($record): void
-    {
-        $message = "Halo, {$record->user->firstname}!\n\n" .
-            "Kami ingin mengingatkan bahwa barang yang Anda sewa belum dikembalikan. " .
-            "Masa sewa seharusnya berakhir pada " . Carbon::parse($record->end_date)->format('d F Y') . ".\n\n" .
-            "Silakan segera mengembalikan barang tersebut. Terima kasih!";
-
-        static::sendWhatsAppMessage($record->user->phone, $message);
-    }
-
-    protected static function sendWhatsAppMessage(string $phone, string $message): void
-    {
-        $apiUrl = 'https://api.fonnte.com/send';
-        $apiKey = env('FONNTE_API_KEY');
-
-        try {
-            $response = Http::withHeaders([
-                'Authorization' => $apiKey,
-            ])
-                ->timeout(60)
-                ->retry(3, 100)
-                ->post($apiUrl, [
-                    'target' => $phone,
-                    'message' => $message,
-                ]);
-
-            if ($response->failed()) {
-                \Log::error('Fonnte API Error: ' . $response->body());
-                throw new \Exception('Failed to send WhatsApp message: ' . $response->body());
-            }
-
-            \Log::info('WhatsApp message sent successfully to: ' . $phone);
-        } catch (\Exception $e) {
-            \Log::error('WhatsApp Notification Error: ' . $e->getMessage());
-            throw new \Exception('Failed to send WhatsApp message: ' . $e->getMessage());
-        }
     }
 
     protected function getFormValidationRules(): array
