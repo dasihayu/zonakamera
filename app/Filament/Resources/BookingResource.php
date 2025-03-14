@@ -13,6 +13,7 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Http;
+use Filament\Notifications\Notification;
 
 class BookingResource extends Resource
 {
@@ -227,6 +228,16 @@ class BookingResource extends Resource
                         default => 'secondary',
                     })
                     ->formatStateUsing(fn(string $state): string => ucfirst($state)),
+
+                Tables\Columns\TextColumn::make('payment_status')
+                    ->badge()
+                    ->label('Payment Status')
+                    ->formatStateUsing(fn(string $state): string => str_replace('_', ' ', ucfirst($state)))
+                    ->color(fn(string $state): string => match ($state) {
+                        'lunas' => 'success',
+                        'belum_lunas' => 'warning',
+                        default => 'secondary',
+                    }),
             ])
             ->filters([
                 Tables\Filters\SelectFilter::make('status')
@@ -280,6 +291,33 @@ class BookingResource extends Resource
                                 ->default(fn($record) => $record->status),
                         ])
                         ->action(fn($record, array $data) => $record->update(['status' => $data['status']])),
+                    Tables\Actions\Action::make('updatePaymentStatus')
+                        ->label('Update Payment Status')
+                        ->icon('heroicon-o-currency-dollar')
+                        ->color('warning')
+                        ->requiresConfirmation()
+                        ->modalHeading('Update Payment Status')
+                        ->modalDescription('Are you sure you want to update the payment status of this booking?')
+                        ->form([
+                            Forms\Components\Select::make('payment_status')
+                                ->label('Payment Status')
+                                ->options([
+                                    'lunas' => 'Lunas',
+                                    'belum_lunas' => 'Belum Lunas',
+                                ])
+                                ->required()
+                                ->default(fn($record) => $record->payment_status),
+                        ])
+                        ->action(function ($record, array $data) {
+                            $record->update([
+                                'payment_status' => $data['payment_status']
+                            ]);
+
+                            Notification::make()
+                                ->title('Payment status updated successfully')
+                                ->success()
+                                ->send();
+                        }),
                     Tables\Actions\Action::make('sendWhatsApp')
                         ->label('Send WhatsApp')
                         ->icon('heroicon-o-chat-bubble-left-right')
