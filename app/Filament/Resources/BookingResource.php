@@ -54,12 +54,69 @@ class BookingResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\Select::make('user_id')
-                    ->relationship('user', 'username')
-                    ->searchable()
-                    ->preload()
-                    ->columnspanfull()
-                    ->required(),
+                Forms\Components\Grid::make()
+                    ->schema([
+                        Forms\Components\Select::make('existing_user_id')
+                            ->label('Existing Customer')
+                            ->options(fn() => \App\Models\User::query()
+                                ->whereDoesntHave('roles', fn($query) => $query->where('name', 'admin'))
+                                ->get()
+                                ->mapWithKeys(fn($user) => [
+                                    $user->id => "{$user->firstname} {$user->lastname} ({$user->email})"
+                                ]))
+                            ->searchable()
+                            ->live()
+                            ->afterStateUpdated(function ($state, callable $set) {
+                                if ($state) {
+                                    $user = \App\Models\User::find($state);
+                                    $set('user_id', $user->id);
+                                    $set('email', $user->email);
+                                    $set('firstname', $user->firstname);
+                                    $set('lastname', $user->lastname);
+                                    $set('phone', $user->phone);
+                                    $set('is_new_customer', false);
+                                } else {
+                                    $set('user_id', null);
+                                    $set('email', null);
+                                    $set('firstname', null);
+                                    $set('lastname', null);
+                                    $set('phone', null);
+                                    $set('is_new_customer', true);
+                                }
+                            })
+                            ->placeholder('Select existing customer or fill form below for new customer'),
+
+                        Forms\Components\Toggle::make('is_new_customer')
+                            ->label('New Customer')
+                            ->default(true)
+                            ->live()
+                            ->afterStateUpdated(fn($state, callable $set) =>
+                            $state ? $set('existing_user_id', null) : null),
+
+                        Forms\Components\TextInput::make('email')
+                            ->email()
+                            ->required()
+                            ->visible(fn(callable $get) => $get('is_new_customer')),
+
+                        Forms\Components\TextInput::make('firstname')
+                            ->required()
+                            ->maxLength(255)
+                            ->visible(fn(callable $get) => $get('is_new_customer')),
+
+                        Forms\Components\TextInput::make('lastname')
+                            ->required()
+                            ->maxLength(255)
+                            ->visible(fn(callable $get) => $get('is_new_customer')),
+
+                        Forms\Components\TextInput::make('phone')
+                            ->tel()
+                            ->required()
+                            ->maxLength(255)
+                            ->visible(fn(callable $get) => $get('is_new_customer')),
+
+                        Forms\Components\Hidden::make('user_id'),
+                    ])
+                    ->columns(2),
 
                 Forms\Components\Repeater::make('products')
                     ->schema([
@@ -294,5 +351,16 @@ class BookingResource extends Resource
             \Log::error('WhatsApp Notification Error: ' . $e->getMessage());
             throw new \Exception('Failed to send WhatsApp message: ' . $e->getMessage());
         }
+    }
+
+    protected function getFormValidationRules(): array
+    {
+        return [
+            'email' => ['required', 'email'],
+            'firstname' => ['required', 'string', 'max:255'],
+            'lastname' => ['required', 'string', 'max:255'],
+            'phone' => ['required', 'string', 'max:255'],
+            // ...existing validation rules...
+        ];
     }
 }
