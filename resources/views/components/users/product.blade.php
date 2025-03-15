@@ -2,7 +2,7 @@
 <div class="flex flex-col items-center justify-center px-4 mx-auto my-8 text-center bg-white md:my-12 md:px-6">
     <h1 class="text-3xl font-bold md:text-5xl">Best Selling Product</h1>
     <!--- Product Carousel --->
-    <div class="grid w-3/4 grid-cols-1 mt-8 sm:grid-cols-2 lg:grid-cols-5 md:mt-12">
+    <div class="grid w-3/4 grid-cols-1 gap-4 mt-8 sm:grid-cols-2 lg:grid-cols-5 md:mt-12">
         @foreach ($products as $product)
             <div class="flex flex-col bg-white rounded-lg shadow-md mx-auto w-full max-w-[300px]">
                 <img src="{{ asset('storage/' . $product->image_url) }}" class="object-cover w-full h-48 rounded-t-lg"

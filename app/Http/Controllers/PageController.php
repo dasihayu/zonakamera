@@ -14,7 +14,20 @@ class PageController extends Controller
     {
         $page = Page::first();
         $videos = Video::where('is_active', true)->get();
-        $products = Product::with('categories')->where('is_visible',  true)->take(4)->get();
+        $products = Product::with('categories')
+            ->where('is_visible', true)
+            ->withCount('bookings')
+            ->orderBy('bookings_count', 'desc')
+            ->take(5)
+            ->get();
+
+        if ($products->isEmpty()) {
+            $products = Product::with('categories')
+            ->where('is_visible', true)
+            ->inRandomOrder()
+            ->take(5)
+            ->get();
+        }
 
         return view('pages.home',  compact('page',  'products', 'videos'));
     }
