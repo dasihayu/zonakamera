@@ -26,6 +26,8 @@ class BookingObserver
         $booking->loadMissing(['products', 'user']);
 
         $user = $booking->user;
+
+        $booking->refresh(); // Refresh untuk memastikan data terbaru dari database diambil
         $products = $booking->products;
 
         if (!$user) {
@@ -40,18 +42,6 @@ class BookingObserver
 
         if ($products->isEmpty()) {
             Log::warning("Booking ID {$booking->id} tidak memiliki produk yang terkait.");
-        }
-
-        // Kirim notifikasi WhatsApp
-        $data = [
-            'target' => $user->phone,
-            'message' => "Halo {$user->firstname}, terimakasih sudah melakukan booking di zonakamera. Admin akan segera menghubungi anda untuk ketersediaan barang.",
-        ];
-
-        try {
-            ZuwindaService::sendMessage($data);
-        } catch (\Exception $e) {
-            Log::error("Gagal mengirim pesan ke {$user->phone}: " . $e->getMessage());
         }
 
         // Tambahkan ke Google Sheets

@@ -2,92 +2,98 @@
 
 namespace App\Services;
 
+use App\Models\Booking;
 use Google\Client;
 use Google\Service\Sheets;
 use Google\Service\Sheets\ValueRange;
-use App\Models\Booking;
 
 class GoogleSheetsService
 {
-    protected $client;
-    protected $service;
+    protected $sheets;
     protected $spreadsheetId;
 
     public function __construct()
     {
-        $this->client = new Client();
-        $this->client->setAuthConfig(storage_path('app/breadit-411514-1f5c60d0a8e7.json'));
-        $this->client->setScopes([Sheets::SPREADSHEETS]);
-
-        $this->service = new Sheets($this->client);
         $this->spreadsheetId = config('services.google.spreadsheet_id');
+        $this->initializeGoogleClient();
+    }
+
+    protected function initializeGoogleClient()
+    {
+        $client = new Client();
+        $client->setApplicationName('Zonakamera Booking System');
+        $client->setScopes([Sheets::SPREADSHEETS]);
+        $client->setAuthConfig(storage_path('app/google-credentials.json'));
+        $client->setAccessType('offline');
+
+        $httpConfig = [];
+
+        // Jika di production dan menggunakan system CA certificates
+        if (app()->environment('production')) {
+            $httpConfig = [
+                'verify' => true, // Gunakan system CA certificates
+                'timeout' => 10,
+            ];
+        } else {
+            // Local development
+            $httpConfig = [
+                'verify' => storage_path('app/cacert.pem'),
+                'timeout' => 10,
+            ];
+        }
+
+        $client->setHttpClient(new \GuzzleHttp\Client($httpConfig));
+        $this->sheets = new Sheets($client);
     }
 
     public function appendBookingData(Booking $booking)
-{
-    // Pastikan relasi dimuat dengan pivot
-    $booking->loadMissing(['products' => function ($query) {
-        $query->withPivot(['quantity', 'price']);
-    }, 'user']);
+    {
+        $range = 'Bookings!A:Z';
 
-    $user = $booking->user;
-    $products = $booking->products;
+        $values = [
+            (string) $booking->booking_id,
+            $booking->start_date->format('Y-m-d H'),
+            $booking->end_date->format('Y-m-d H'),
+            (string) $booking->user->firstname,
+            (string) $booking->user->phone,
+            (string) $this->getProductsWithQuantity($booking),
+            (string) $booking->total_price
+        ];
 
-    if ($products->isEmpty()) {
-        \Log::warning("Tidak ada produk ditemukan untuk Booking ID: {$booking->id}");
+        $body = new ValueRange([
+            'values' => [$values] // Pastikan data berbentuk array di dalam array
+        ]);
+
+        $params = [
+            'valueInputOption' => 'RAW'
+        ];
+
+        try {
+            $this->sheets->spreadsheets_values->append(
+                $this->spreadsheetId,
+                $range,
+                $body,
+                $params
+            );
+        } catch (\Exception $e) {
+            \Log::error('Google Sheets Error: ' . $e->getMessage());
+            throw $e;
+        }
     }
 
-    // Format products dengan quantity dan price dari pivot
-    $productsList = $products->map(function ($product) {
-        if (!$product->pivot) {
-            // \Log::warning("Pivot data tidak ditemukan untuk Product ID: {$product->id} di Booking ID: {$product->pivot->booking_id ?? 'N/A'}");
-            return $product->title;
+
+    protected function getProductsWithQuantity(Booking $booking)
+    {
+        $products = $booking->products()->get(); // Pastikan relasi diambil dengan get()
+        \Log::info($products);
+
+        if ($products->isEmpty()) {
+            return 'No Products';
         }
 
-        $price = number_format($product->pivot->price ?? 0, 0, ',', '.');
-        return sprintf(
-            '%s (Qty: %d, Price: Rp %s)',
-            $product->title,
-            $product->pivot->quantity ?? 1,
-            $price
-        );
-    })->implode("\n");
-
-    \Log::info('Products being added to spreadsheet:', [
-        'booking_id' => $booking->id,
-        'products' => $productsList,
-        'raw_products' => $products->toArray()
-    ]);
-
-    $values = [
-        [
-            $booking->id,
-            $user->firstname . ' ' . $user->lastname,
-            $user->phone,
-            $productsList ?: 'Tidak ada produk',
-            $booking->start_date->format('Y-m-d'),
-            $booking->end_date->format('Y-m-d'),
-            'Rp ' . number_format($booking->price, 0, ',', '.')
-        ]
-    ];
-
-    $body = new ValueRange([
-        'values' => $values
-    ]);
-
-    $params = [
-        'valueInputOption' => 'RAW'
-    ];
-
-    try {
-        $this->service->spreadsheets_values->append(
-            $this->spreadsheetId,
-            'Sheet1!A:G',
-            $body,
-            $params
-        );
-    } catch (\Exception $e) {
-        \Log::error("Gagal menambahkan data ke Google Sheets: " . $e->getMessage());
+        return $products->map(function ($product) {
+            $quantity = $product->pivot->quantity ?? 1;
+            return "{$product->title} (x{$quantity})";
+        })->implode(', ');
     }
-}
 }

@@ -57,8 +57,7 @@ class Booking extends Model
     public function products()
     {
         return $this->belongsToMany(Product::class, 'booking_product')
-            ->where('is_visible', true)
-            ->withPivot('quantity', 'price')
+            ->withPivot(['quantity', 'price'])
             ->withTimestamps();
     }
 
