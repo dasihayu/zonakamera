@@ -56,7 +56,6 @@ class GoogleSheetsService
             $booking->end_date->format('Y-m-d H'),
             (string) $booking->user->firstname,
             (string) $booking->user->phone,
-            (string) $this->getProductsWithQuantity($booking),
             (string) $booking->total_price
         ];
 
